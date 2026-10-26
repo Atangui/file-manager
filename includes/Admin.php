@@ -159,6 +159,7 @@ final class Admin {
 			'version'    => FILORA_VERSION,
 			'route'      => $route,
 			'frontend'   => (bool) $frontend,
+			'css'        => FILORA_URL . 'assets/dist/app.css?ver=' . ( is_readable( FILORA_DIR . 'assets/dist/app.css' ) ? filemtime( FILORA_DIR . 'assets/dist/app.css' ) : FILORA_VERSION ),
 			'adminUrl'   => admin_url( 'admin.php?page=filora' ),
 			'user'       => array(
 				'id'          => (int) $user->ID,

@@ -224,10 +224,8 @@ final class Access {
 			return null;
 		}
 		if ( ! is_dir( $path ) && $create ) {
+			// Folders created inside the Vault inherit its deny rules (Apache, IIS and the Nginx snippet).
 			wp_mkdir_p( $path );
-			if ( Storage::is_vault_path( $path ) ) {
-				Storage::protect( $path );
-			}
 		}
 		$real = Paths::real( $path );
 		if ( false === $real || ! is_dir( $real ) || ! is_readable( $real ) ) {

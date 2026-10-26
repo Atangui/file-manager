@@ -258,6 +258,9 @@ final class Paths {
 			FILORA_DIR,
 			Storage::base(),
 			Storage::vault(),
+			Storage::vault() . '/.htaccess',
+			Storage::vault() . '/web.config',
+			Storage::vault() . '/index.php',
 		);
 		$paths = array();
 		foreach ( $list as $p ) {

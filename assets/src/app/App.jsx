@@ -51,18 +51,22 @@ export function App() {
     );
   }
 
+  // Overlays are siblings of .flr-app: it is a size container (container queries),
+  // which would otherwise become the containing block of fixed-position overlays.
   return (
-    <div class={'flr-app' + (fullscreen.value ? ' is-fullscreen' : '')}>
-      <Sidebar />
-      {drawerOpen.value ? <div class="flr-drawer-backdrop" onClick={() => { drawerOpen.value = false; }} /> : null}
-      <main class="flr-main">
-        {view === 'files' || !LOADERS[view] ? <FilesView /> : <LazyView name={view} key={view} />}
-      </main>
-      <UploadPanel />
+    <>
+      <div class={'flr-app' + (fullscreen.value ? ' is-fullscreen' : '')}>
+        <Sidebar />
+        {drawerOpen.value ? <div class="flr-drawer-backdrop" onClick={() => { drawerOpen.value = false; }} /> : null}
+        <main class="flr-main">
+          {view === 'files' || !LOADERS[view] ? <FilesView /> : <LazyView name={view} key={view} />}
+        </main>
+        <UploadPanel />
+      </div>
       <CommandPalette />
       <DialogHost />
       <ContextMenu />
       <Toasts />
-    </div>
+    </>
   );
 }

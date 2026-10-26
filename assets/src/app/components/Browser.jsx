@@ -13,6 +13,7 @@ import { openMenu } from '../lib/ui';
 import { itemsFor, itemsForFolder, openEntry, transfer, newFolder, uploadFiles } from '../lib/actions';
 import { enqueue, filesFromDrop, hasFiles } from '../lib/upload';
 import { parentPath } from '../lib/files';
+import { query } from '../lib/root';
 
 const DRAG_TYPE = 'application/x-filora-paths';
 
@@ -376,7 +377,7 @@ export function moveFocus(delta, extend) {
 
 /** Columns currently displayed in grid view (for up/down arrows). */
 export function gridColumns() {
-  const el = document.querySelector('[data-browser]');
+  const el = query('[data-browser]');
   const grid = el && el.querySelector('.flr-grid');
   if (!grid) return 1;
   return Number(getComputedStyle(grid).getPropertyValue('--cols')) || 1;

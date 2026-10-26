@@ -11,17 +11,15 @@ import { resolvedTheme } from '../lib/store';
 import { toast, toastError } from '../lib/ui';
 import { confirm } from './common';
 import { diffLines } from '../lib/diff';
+import { addStylesheet, query } from '../lib/root';
 
 let cmPromise = null;
 function loadCodeMirror() {
+  addStylesheet(C.codemirror.css);
   if (window.wp && window.wp.CodeMirror) return Promise.resolve(window.wp.CodeMirror);
   if (!cmPromise) {
     cmPromise = new Promise((resolve, reject) => {
       window.wp = window.wp || {};
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = C.codemirror.css;
-      document.head.append(css);
       const s = document.createElement('script');
       s.src = C.codemirror.js;
       s.async = true;
@@ -316,7 +314,7 @@ export function EditorDialog({ close, entry }) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         save();
-      } else if (e.key === 'Escape' && !findOpen && !historyOpen && !document.querySelector('.flr-dialog')) {
+      } else if (e.key === 'Escape' && !findOpen && !historyOpen && !query('.flr-dialog')) {
         e.preventDefault();
         requestClose();
       }
