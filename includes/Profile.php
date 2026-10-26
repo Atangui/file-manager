@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Profile {
 
-	const WRITE_OPS = array( 'upload', 'mkdir', 'mkfile', 'rename', 'move', 'copy', 'delete', 'edit', 'archive', 'extract', 'chmod', 'image' );
+	const WRITE_OPS = array( 'upload', 'replace', 'mkdir', 'mkfile', 'rename', 'move', 'copy', 'delete', 'edit', 'archive', 'extract', 'chmod', 'image' );
 
 	/**
 	 * Role key used ("admin" for full administrators).

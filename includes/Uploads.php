@@ -221,8 +221,11 @@ final class Uploads {
 				throw new Error( 'exists', __( 'An item with this name already exists.', 'filora' ), 409 );
 			}
 			if ( 'overwrite' === $conflict && is_file( $target ) ) {
+				if ( ! $p->can( 'replace' ) && ! $p->can( 'delete' ) ) {
+					throw new Error( 'replace_forbidden', __( 'You are not allowed to replace existing files.', 'filora' ), 403 );
+				}
 				$fs->assert_writable( $target );
-				Versions::snapshot( $target, $p->user_id, 'upload' );
+				self::keep_previous( $target, $p );
 			} else {
 				$target = $dir . '/' . Paths::unique_name( $dir, $name );
 			}
@@ -238,6 +241,29 @@ final class Uploads {
 		}
 		@chmod( $target, 0644 ); // phpcs:ignore
 		return $fs->entry( $target );
+	}
+
+	/**
+	 * Keep the file about to be replaced: as a version when possible, otherwise in the
+	 * trash. A restricted role may not replace a file that could not be kept.
+	 *
+	 * @param string  $target File being replaced.
+	 * @param Profile $p      Profile.
+	 * @throws Error When the previous file cannot be kept for a non-admin.
+	 */
+	private static function keep_previous( $target, Profile $p ) {
+		$size = (int) @filesize( $target ); // phpcs:ignore
+		if ( Settings::value( 'general', 'versions', true ) && $size <= Versions::MAX_BYTES ) {
+			Versions::snapshot( $target, $p->user_id, 'upload' );
+			return;
+		}
+		if ( Settings::value( 'general', 'trash', true ) ) {
+			Trash::put( $target, $p->user_id );
+			return;
+		}
+		if ( ! $p->is_admin ) {
+			throw new Error( 'replace_unsafe', __( 'This file cannot be replaced: neither file versions nor the trash are enabled to keep the previous one.', 'filora' ), 403 );
+		}
 	}
 
 	/**

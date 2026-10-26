@@ -10,7 +10,7 @@ import {
   loading, loadError, listing, cwd, search, refresh, clipboard,
 } from '../lib/store';
 import { openMenu } from '../lib/ui';
-import { itemsFor, itemsForFolder, openEntry, transfer, newFolder, uploadFiles } from '../lib/actions';
+import { itemsFor, itemsForFolder, openEntry, transfer, newFolder, uploadFiles, uploadItems } from '../lib/actions';
 import { enqueue, filesFromDrop, hasFiles } from '../lib/upload';
 import { parentPath } from '../lib/files';
 import { query } from '../lib/root';
@@ -257,7 +257,7 @@ export function Browser() {
     e.preventDefault();
     setOverlay(false);
     dragDepth.current = 0;
-    if (hasFiles(e) && can('upload') && !searching) enqueue(await filesFromDrop(e.dataTransfer), cwd.value);
+    if (hasFiles(e) && can('upload') && !searching) uploadItems(await filesFromDrop(e.dataTransfer), cwd.value);
   };
 
   const sortBy = (key) => {

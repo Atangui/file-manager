@@ -4,7 +4,7 @@ import { get, post, streamUrl } from './api';
 import { can, isAdmin, C } from './config';
 import { t, tn } from './i18n';
 import { toast, toastError, openDialog } from './ui';
-import { confirm, prompt } from '../dialogs/common';
+import { confirm, prompt, choose } from '../dialogs/common';
 import {
   cwd, load, refresh, selection, clipboard, navigate, prefs, setPref, selectedEntries, entries, focusPath, anchor, search, filterText, toggleDetails,
 } from './store';
@@ -89,12 +89,63 @@ export async function newFile() {
 
 /* Upload ------------------------------------------------------------------------- */
 
+const canReplace = () => can('upload') && (can('replace') || can('delete'));
+
+/**
+ * Upload into a folder. When it is the open folder and some names already exist,
+ * ask whether to replace them (previous version kept) or keep both.
+ */
+export async function uploadItems(items, dest) {
+  if (!items.length) return;
+  if (dest !== cwd.value) return enqueue(items, dest);
+  const existing = new Set(entries.value.filter((e) => e.type === 'file').map((e) => e.name));
+  const dupes = items.filter((it) => !(it.relpath || it.file.name).includes('/') && existing.has(it.relpath || it.file.name));
+  if (!dupes.length) return enqueue(items, dest);
+  if (!canReplace()) {
+    enqueue(items, dest);
+    toast(tn('%d file already existed: the new one was renamed.', '%d files already existed: the new ones were renamed.', dupes.length), { type: 'info' });
+    return;
+  }
+  const choice = await choose({
+    title: tn('This file already exists', 'These files already exist', dupes.length),
+    message: tn('Replace it with the new version? Its web address stays the same and the previous version is kept.', 'Replace them with the new version? Their web address stays the same and the previous versions are kept.', dupes.length),
+    icon: 'upload',
+    list: dupes.map((d) => d.relpath || d.file.name),
+    choices: [
+      { value: 'rename', label: t('Keep both') },
+      { value: 'overwrite', label: t('Replace'), primary: true },
+    ],
+  });
+  if (!choice) return;
+  const dupeSet = new Set(dupes);
+  enqueue(items.filter((it) => !dupeSet.has(it)), dest);
+  enqueue(dupes, dest, choice);
+}
+
 function pick(directory) {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
   if (directory) input.webkitdirectory = true;
-  input.addEventListener('change', () => enqueue(filesFromInput(input), cwd.value));
+  input.addEventListener('change', () => uploadItems(filesFromInput(input), cwd.value));
+  input.click();
+}
+
+/** Replace a file with a new version: same name and web address, previous one kept. */
+export function replaceFile(entry) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  if (entry.ext) input.accept = '.' + entry.ext;
+  input.addEventListener('change', () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const ext = (file.name.includes('.') ? file.name.split('.').pop() : '').toLowerCase();
+    if ((entry.ext || '').toLowerCase() !== ext) {
+      toast(t('Choose a file of the same type (%s).', (entry.ext || '?').toUpperCase()), { type: 'error' });
+      return;
+    }
+    enqueue([{ file, relpath: entry.name }], parentPath(entry.path), 'overwrite');
+  });
   input.click();
 }
 export const uploadFiles = () => pick(false);
@@ -358,6 +409,7 @@ export function itemsFor(list) {
   }
   if (can('download')) items.push({ label: list.length > 1 || (one && one.type === 'dir') ? t('Download as ZIP') : t('Download'), icon: 'download', run: () => download(list) });
   if (one && can('share')) items.push({ label: t('Share…'), icon: 'share', run: () => share(one) });
+  if (one && one.type === 'file' && canReplace()) items.push({ label: t('Replace with a new version…'), icon: 'upload', run: () => replaceFile(one), disabled: !one.writable || one.system });
   if (one) items.push({ label: t('Details'), icon: 'info', run: () => toggleDetails(true), kbd: 'I' });
   items.push('-');
   if (one && can('rename')) items.push({ label: t('Rename'), icon: 'rename', run: () => rename(one), disabled: !writable, kbd: 'F2' });

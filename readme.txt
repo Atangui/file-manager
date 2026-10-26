@@ -4,7 +4,7 @@ Tags: file manager, share files, client portal, secure download, code editor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,12 @@ Nginx ignores .htaccess files. Add the rule shown in Files → Security tools to
 Only the optional core integrity check contacts api.wordpress.org. There are no external fonts, CDNs or trackers.
 
 == Changelog ==
+
+= 1.0.2 =
+* Role templates (View & download, Document drop, Document manager, Personal space); contributors get "Document drop" on new installs.
+* New "replace" permission: update a document in place (same web address), previous version kept. Overwriting now always needs replace/delete rights.
+* Settings export / import between sites; warnings for roles given to self-registered accounts.
+* The app now talks to the server in the user's language.
 
 = 1.0.1 =
 * Public share page redesigned for non-technical visitors; follows the visitor's language.

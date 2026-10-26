@@ -293,3 +293,12 @@
 .flr-editor.is-dark .cm-s-filora .cm-header { color: #93c5fd; }
 .flr-cm-match { background: color-mix(in srgb, #facc15 40%, transparent); border-radius: 2px; }
 .flr-cm-error-line { background: color-mix(in srgb, var(--flr-danger) 16%, transparent); }
+
+/* Role templates */
+.flr-role-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 0 12px; font-size: 12.5px; }
+.flr-role-presets .flr-chip { cursor: pointer; }
+.flr-role-desc { margin: -4px 0 12px !important; }
+.flr-role-warn { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 12px !important; padding: 9px 12px; border-radius: 10px; background: color-mix(in srgb, var(--flr-warning) 12%, transparent); color: var(--flr-text); font-size: 12.5px; line-height: 1.45; }
+.flr-role-warn .flr-ico { color: var(--flr-warning); flex: none; margin-top: 1px; }
+.flr-role-warn.is-danger { background: color-mix(in srgb, var(--flr-danger) 12%, transparent); }
+.flr-role-warn.is-danger .flr-ico { color: var(--flr-danger); }

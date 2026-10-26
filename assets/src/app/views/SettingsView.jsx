@@ -3,11 +3,12 @@ import { useEffect, useState } from 'preact/hooks';
 import { Icon } from '../components/Icon';
 import { Button, Card, Field, Input, Textarea, Switch, Select, Spinner, Badge, Segmented } from '../components/ui';
 import { ViewHeader } from '../components/ViewHeader';
-import { t } from '../lib/i18n';
+import { t, tn } from '../lib/i18n';
 import { get, post } from '../lib/api';
 import { route, navigate } from '../lib/store';
 import { toast, toastError } from '../lib/ui';
 import { copyText } from '../lib/files';
+import { confirm } from '../dialogs/common';
 
 const TABS = () => [
   { value: 'general', label: t('General'), icon: 'settings' },
@@ -17,7 +18,7 @@ const TABS = () => [
 ];
 
 const OPS = () => ({
-  download: t('Download & preview'), upload: t('Upload'), mkdir: t('Create folders'), mkfile: t('Create files'), rename: t('Rename'),
+  download: t('Download & preview'), upload: t('Upload'), replace: t('Replace a file (previous one kept)'), mkdir: t('Create folders'), mkfile: t('Create files'), rename: t('Rename'),
   move: t('Move'), copy: t('Copy & duplicate'), delete: t('Delete'), edit: t('Edit text files'), archive: t('Create ZIP'),
   extract: t('Extract ZIP'), chmod: t('Change permissions'), image: t('Edit images'), share: t('Create share links'),
 });
@@ -73,15 +74,45 @@ function General({ s, set, meta }) {
   );
 }
 
-function RoleCard({ role, conf, onChange, paths }) {
+function RoleCard({ role, conf, onChange, meta }) {
   const ops = OPS();
   const c = conf;
-  const up = (patch) => onChange({ ...c, ...patch });
+  const presets = meta.presets || {};
+  const up = (patch) => onChange({ ...c, ...patch, preset: patch.preset !== undefined ? patch.preset : (Object.keys(patch).some((k) => k !== 'enabled') ? '' : c.preset) });
+  const reg = meta.registration || {};
+  const isDefault = reg.defaultRole === role.key;
+  const fresh = !(meta.settings.roles && meta.settings.roles[role.key]);
+  const users = tn('%d user', '%d users', role.users || 0);
+  const applyPreset = async (key) => {
+    const preset = presets[key];
+    if (!preset) return;
+    if (c.enabled && !(await confirm({ title: t('Apply “%s”?', preset.label), message: t('The current settings of this role will be replaced.'), confirmLabel: t('Apply') }))) return;
+    onChange({ ...c, ...preset.conf, enabled: true, preset: key });
+  };
   return (
     <div class={'flr-role' + (c.enabled ? ' is-enabled' : '')}>
       <header>
-        <Switch checked={c.enabled} onChange={(v) => up({ enabled: v })} label={role.name} description={c.enabled ? t('Has access to the file manager') : t('No access')} />
+        <Switch checked={c.enabled} onChange={(v) => (v && fresh && presets.documents ? onChange({ ...c, ...presets.documents.conf, enabled: true, preset: 'documents' }) : up({ enabled: v }))} label={role.name} description={(c.enabled ? (presets[c.preset] ? presets[c.preset].label : t('Has access to the file manager')) : t('No access')) + ' · ' + users} />
       </header>
+      {isDefault && (c.enabled || reg.open) ? (
+        <p class={'flr-role-warn' + (reg.open ? ' is-danger' : '')}>
+          <Icon name="alert" size={16} />
+          <span>
+            {reg.open
+              ? t('Anyone can register on this site and automatically gets this role (Settings → General → Membership). Giving it access to files is risky.')
+              : t('New accounts (registration forms, plugins) automatically get this role. Make sure it should access files.')}
+          </span>
+        </p>
+      ) : null}
+      <div class="flr-role-presets">
+        <span class="flr-muted">{c.enabled ? t('Apply a template:') : t('Give access with a template:')}</span>
+        {Object.keys(presets).map((key) => (
+          <button type="button" key={key} class={'flr-chip' + (c.enabled && c.preset === key ? ' is-on' : '')} title={presets[key].description} onClick={() => applyPreset(key)}>
+            {presets[key].label}
+          </button>
+        ))}
+      </div>
+      {c.enabled && presets[c.preset] ? <p class="flr-help flr-role-desc">{presets[c.preset].description}</p> : null}
       {c.enabled ? (
         <div class="flr-role-body">
           <Field label={t('Root folder')}>
@@ -148,7 +179,7 @@ function Access({ s, set, meta }) {
         <Placeholders />
         <div class="flr-roles">
           {meta.roles.map((role) => (
-            <RoleCard key={role.key} role={role} conf={roles[role.key] || { ...meta.roleDefaults }} paths={meta.paths} onChange={(conf) => setRole(role.key, conf)} />
+            <RoleCard key={role.key} role={role} conf={roles[role.key] || { ...meta.roleDefaults }} meta={meta} onChange={(conf) => setRole(role.key, conf)} />
           ))}
         </div>
       </Card>
@@ -283,9 +314,61 @@ export function SettingsView() {
     }
   };
 
+  const exportSettings = async () => {
+    try {
+      const data = await get('settings/export');
+      const host = (() => { try { return new URL(data.site).hostname; } catch (e) { return 'site'; } })();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'filora-settings-' + host + '.json';
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    } catch (e) {
+      toastError(e);
+    }
+  };
+  const importSettings = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json,.json';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      let data;
+      try {
+        data = JSON.parse(await file.text());
+      } catch (e) {
+        toast(t('This file is not a Filora settings export.'), { type: 'error' });
+        return;
+      }
+      const ok = await confirm({
+        title: t('Import these settings?'),
+        message: t('Settings exported from %s will replace the current ones. This site’s administrator list is kept.', (data && data.site) || '?'),
+        confirmLabel: t('Import'),
+      });
+      if (!ok) return;
+      try {
+        const d = await post('settings/import', data);
+        setMeta(d);
+        setDraft(JSON.parse(JSON.stringify(d.settings)));
+        toast(t('Settings imported.'), { type: 'success' });
+        (d.warnings || []).forEach((w) => toast(w, { type: 'warning' }));
+      } catch (e) {
+        toastError(e);
+      }
+    };
+    input.click();
+  };
+
   return (
     <div class="flr-view">
-      <ViewHeader icon="settings" title={t('Settings')} subtitle={t('Configure access, security and sharing.')} />
+      <ViewHeader icon="settings" title={t('Settings')} subtitle={t('Configure access, security and sharing.')}>
+        <Button size="sm" variant="ghost" icon="download" onClick={exportSettings} title={t('Download these settings to reuse them on another site')}>{t('Export')}</Button>
+        <Button size="sm" variant="ghost" icon="upload" onClick={importSettings} title={t('Apply settings exported from another site')}>{t('Import')}</Button>
+      </ViewHeader>
       <div class="flr-view-toolbar flr-tabs" role="tablist">
         {TABS().map((x) => (
           <button type="button" role="tab" aria-selected={String(tab === x.value)} class={'flr-tab' + (tab === x.value ? ' is-active' : '')} key={x.value} onClick={() => navigate('settings', x.value)}>

@@ -265,6 +265,83 @@ ok( 200 === $s, 'editor can share own file' );
 list( $s, $d ) = req( 'GET', '/shares' );
 ok( 200 === $s && 1 === count( $d ), 'editor only sees own shares' );
 
+section( 'Role templates' );
+as_user( $admin->ID );
+$install = Filora\Settings::install_defaults();
+ok( ! empty( $install['roles']['contributor']['enabled'] ) && 'documents' === $install['roles']['contributor']['preset'], 'fresh install: contributors get the "Document drop" template' );
+ok( empty( Filora\Settings::defaults()['roles'] ), 'upgrades never grant access silently (defaults have no roles)' );
+$presets                          = Filora\Settings::role_presets();
+$settings                         = Filora\Settings::get();
+$settings['roles']['contributor'] = array_merge( $presets['documents']['conf'], array( 'enabled' => true, 'preset' => 'documents' ) );
+Filora\Settings::update( $settings );
+$contrib = get_user_by( 'login', 'contrib1' );
+if ( ! $contrib ) {
+	$cid     = wp_create_user( 'contrib1', 'password', 'contrib1@example.com' );
+	$contrib = get_user_by( 'id', $cid );
+	$contrib->set_role( 'contributor' );
+}
+$docs = ABSPATH . 'flr-docs-test';
+Filora\Fs::delete_path( $docs );
+wp_mkdir_p( $docs . '/a' );
+file_put_contents( $docs . '/list.pdf', '%PDF-1.4 v1' );
+file_put_contents( $docs . '/a/list.pdf', '%PDF-1.4 other' );
+as_user( $contrib->ID );
+list( $s, $d ) = req( 'GET', '/fs/list', array( 'path' => '/' ) );
+$names = 200 === $s ? wp_list_pluck( $d['entries'], 'name' ) : array();
+ok( 200 === $s && in_array( 'flr-docs-test', $names, true ), 'contributor sees the site’s own folders' );
+ok( ! array_intersect( $names, array( 'wp-admin', 'wp-content', 'wp-includes', 'wp-config.php', 'index.php', 'xmlrpc.php', '.htaccess', 'readme.html', 'license.txt' ) ), 'contributor never sees WordPress files' );
+list( $s, $d ) = req( 'GET', '/fs/read', array( 'path' => '/wp-config.php' ) );
+ok( $s >= 400, 'contributor cannot read wp-config.php' );
+list( $s, $d ) = req( 'POST', '/fs/delete', array( 'paths' => array( '/flr-docs-test/list.pdf' ) ) );
+ok( 403 === $s && file_exists( $docs . '/list.pdf' ), 'contributor cannot delete' );
+list( $s, $d ) = req( 'POST', '/fs/rename', array( 'path' => '/flr-docs-test/list.pdf', 'name' => 'x.pdf' ) );
+ok( 403 === $s, 'contributor cannot rename' );
+$fs  = new Filora\Fs( Filora\Access::profile() );
+$tmp = tempnam( get_temp_dir(), 'flr' );
+file_put_contents( $tmp, '%PDF-1.4 v2' );
+$entry = Filora\Uploads::place( $fs, $tmp, '/flr-docs-test', 'list.pdf', 'overwrite' );
+ok( 'list.pdf' === $entry['name'] && '%PDF-1.4 v2' === file_get_contents( $docs . '/list.pdf' ), 'contributor replaces a file in place (same web address)' );
+ok( count( Filora\Versions::all( $docs . '/list.pdf' ) ) >= 1, 'the replaced version is kept' );
+$tmp = tempnam( get_temp_dir(), 'flr' );
+file_put_contents( $tmp, '<p>hi</p>' );
+try {
+	Filora\Uploads::place( $fs, $tmp, '/flr-docs-test', 'page.html', 'rename' );
+	ok( false, 'contributor cannot upload HTML' );
+} catch ( Filora\Error $e ) {
+	ok( true, 'contributor cannot upload HTML' );
+}
+@unlink( $tmp );
+// Without the "replace" permission, uploading never overwrites.
+as_user( $admin->ID );
+$settings['roles']['contributor']['ops'] = array( 'download', 'upload', 'copy' );
+Filora\Settings::update( $settings );
+as_user( $contrib->ID );
+$fs  = new Filora\Fs( Filora\Access::profile() );
+$tmp = tempnam( get_temp_dir(), 'flr' );
+file_put_contents( $tmp, '%PDF-1.4 v3' );
+try {
+	Filora\Uploads::place( $fs, $tmp, '/flr-docs-test', 'list.pdf', 'overwrite' );
+	ok( false, 'upload-only role cannot overwrite' );
+} catch ( Filora\Error $e ) {
+	ok( 'replace_forbidden' === $e->getCode() || '%PDF-1.4 v2' === file_get_contents( $docs . '/list.pdf' ), 'upload-only role cannot overwrite' );
+}
+@unlink( $tmp );
+list( $s, $d ) = req( 'POST', '/fs/transfer', array( 'paths' => array( '/flr-docs-test/list.pdf' ), 'dest' => '/flr-docs-test/a', 'mode' => 'copy', 'conflict' => 'overwrite' ) );
+ok( '%PDF-1.4 other' === file_get_contents( $docs . '/a/list.pdf' ), 'paste with overwrite needs the delete permission' );
+
+section( 'Settings export / import' );
+as_user( $admin->ID );
+list( $s, $d ) = req( 'GET', '/settings/export' );
+ok( 200 === $s && ! isset( $d['settings']['general']['admin_users'] ) && isset( $d['settings']['roles']['contributor'] ), 'export is portable (no user IDs)' );
+$d['settings']['roles']['ghost_role'] = $d['settings']['roles']['contributor'];
+$d['settings']['general']['root']     = '/does/not/exist';
+list( $s, $d2 ) = req( 'POST', '/settings/import', array(), $d );
+ok( 200 === $s && 2 === count( $d2['warnings'] ) && '{ABSPATH}' === $d2['settings']['general']['root'] && ! isset( $d2['settings']['roles']['ghost_role'] ), 'import skips unknown roles and missing root folders' );
+list( $s, $d2 ) = req( 'POST', '/settings/import', array(), array( 'hello' => 'world' ) );
+ok( 400 === $s, 'import refuses files that are not Filora exports' );
+Filora\Fs::delete_path( $docs );
+Filora\Settings::update( array( 'roles' => array() ) );
+
 section( 'Sudo mode' );
 as_user( $admin->ID );
 $settings                     = Filora\Settings::get();

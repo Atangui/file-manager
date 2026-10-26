@@ -69,7 +69,7 @@ final class Installer {
 	public static function install_site() {
 		self::create_tables();
 		if ( false === get_option( Settings::OPTION, false ) ) {
-			add_option( Settings::OPTION, Settings::defaults(), '', false );
+			add_option( Settings::OPTION, Settings::install_defaults(), '', false );
 		}
 		Storage::ensure();
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {

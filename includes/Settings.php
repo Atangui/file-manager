@@ -19,7 +19,7 @@ final class Settings {
 	/**
 	 * Operations that can be granted per role.
 	 */
-	const OPS = array( 'download', 'upload', 'mkdir', 'mkfile', 'rename', 'move', 'copy', 'delete', 'edit', 'archive', 'extract', 'chmod', 'image', 'share' );
+	const OPS = array( 'download', 'upload', 'replace', 'mkdir', 'mkfile', 'rename', 'move', 'copy', 'delete', 'edit', 'archive', 'extract', 'chmod', 'image', 'share' );
 
 	/**
 	 * Request-level cache.
@@ -53,7 +53,103 @@ final class Settings {
 			'upload_exts' => 'jpg,jpeg,png,gif,webp,avif,pdf,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,txt,csv,rtf,zip,mp4,mov,webm,mp3,wav,m4a',
 			'max_upload'  => 0,
 			'quota'       => 0,
+			'preset'      => '',
 		);
+	}
+
+	/**
+	 * What restricted roles never need to see when their root is the site root:
+	 * WordPress itself, every PHP file, dotfiles (.htaccess, .env, .git…), backups
+	 * and archives that often hold a database dump. Patterns, so files added later
+	 * (a new backup, wp-cli.phar…) are hidden too — unlike a fixed list.
+	 *
+	 * @return string[]
+	 */
+	public static function wordpress_hidden_patterns() {
+		return array( 'wp-admin', 'wp-includes', 'wp-content', '*.php', '*.phar', 'wp-cli.*', '.*', 'readme.html', 'license.txt', 'licence.txt', 'cgi-bin', '*.log', 'error_log', '*.zip', '*.tar', '*.gz', '*.tgz', '*.7z', '*.rar', '*.wpress', 'backup*', 'robots.txt', 'ads.txt', 'favicon.ico' );
+	}
+
+	/**
+	 * Ready-made role profiles ("templates") offered in Settings → Access & roles.
+	 *
+	 * @return array<string, array{label:string, description:string, conf:array}>
+	 */
+	public static function role_presets() {
+		$documents = 'pdf,jpg,jpeg,png,webp,docx,xlsx,pptx';
+		$presets   = array(
+			'viewer'    => array(
+				'label'       => __( 'View & download only', 'filora' ),
+				'description' => __( 'Sees the site’s own folders and files (never WordPress files) and can download them. Cannot change anything.', 'filora' ),
+				'conf'        => array(
+					'root'        => '{ABSPATH}',
+					'create_root' => false,
+					'ops'         => array( 'download' ),
+					'hidden'      => self::wordpress_hidden_patterns(),
+					'locked'      => array(),
+					'upload_exts' => '',
+					'max_upload'  => 0,
+					'quota'       => 0,
+				),
+			),
+			'documents' => array(
+				'label'       => __( 'Document drop', 'filora' ),
+				'description' => __( 'Like a classic file manager set-up for contributors: sees the site’s folders without WordPress, downloads, uploads documents (PDF, Office, images) and replaces a file with a new version while keeping its web address. Cannot delete, rename or move.', 'filora' ),
+				'conf'        => array(
+					'root'        => '{ABSPATH}',
+					'create_root' => false,
+					'ops'         => array( 'download', 'upload', 'replace' ),
+					'hidden'      => self::wordpress_hidden_patterns(),
+					'locked'      => array(),
+					'upload_exts' => $documents,
+					'max_upload'  => 20,
+					'quota'       => 0,
+				),
+			),
+			'manager'   => array(
+				'label'       => __( 'Document manager', 'filora' ),
+				'description' => __( 'For trusted staff: also creates folders, renames, moves, deletes (to the trash) and creates share links. Still never sees WordPress files.', 'filora' ),
+				'conf'        => array(
+					'root'        => '{ABSPATH}',
+					'create_root' => false,
+					'ops'         => array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'move', 'copy', 'delete', 'share' ),
+					'hidden'      => self::wordpress_hidden_patterns(),
+					'locked'      => array(),
+					'upload_exts' => $documents . ',gif,mp4,mov,mp3',
+					'max_upload'  => 100,
+					'quota'       => 0,
+				),
+			),
+			'personal'  => array(
+				'label'       => __( 'Personal space (client portal)', 'filora' ),
+				'description' => __( 'Each user gets their own private folder in the Vault, created automatically, with a 1 GB quota. Nobody sees anyone else’s files.', 'filora' ),
+				'conf'        => array(
+					'root'        => '{VAULT}/clients/{user_login}',
+					'create_root' => true,
+					'ops'         => array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'move', 'copy', 'delete', 'share' ),
+					'hidden'      => array(),
+					'locked'      => array(),
+					'upload_exts' => self::role_defaults()['upload_exts'],
+					'max_upload'  => 100,
+					'quota'       => 1024,
+				),
+			),
+		);
+		return apply_filters( 'filora_role_presets', $presets );
+	}
+
+	/**
+	 * Settings written on a fresh install: contributors get the "Document drop" profile.
+	 * Existing sites are never changed silently (an upgrade must not grant new access).
+	 *
+	 * @return array
+	 */
+	public static function install_defaults() {
+		$defaults = self::defaults();
+		$presets  = self::role_presets();
+		if ( get_role( 'contributor' ) && isset( $presets['documents'] ) ) {
+			$defaults['roles']['contributor'] = array_merge( self::role_defaults(), $presets['documents']['conf'], array( 'enabled' => true, 'preset' => 'documents' ) );
+		}
+		return apply_filters( 'filora_install_defaults', $defaults );
 	}
 
 	/**
@@ -273,6 +369,7 @@ final class Settings {
 					'upload_exts' => self::exts( $conf['upload_exts'] ),
 					'max_upload'  => self::int( $conf['max_upload'], 0, 1048576 ),
 					'quota'       => self::int( $conf['quota'], 0, 104857600 ),
+					'preset'      => sanitize_key( (string) $conf['preset'] ),
 				);
 			}
 		}
