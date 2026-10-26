@@ -8,6 +8,9 @@ import { Empty, Spinner } from './components/ui';
 import { FilesView } from './views/FilesView';
 import { route, drawerOpen, fullscreen } from './lib/store';
 import { C } from './lib/config';
+import { dialogs } from './lib/ui';
+import { openShortcuts } from './lib/actions';
+import { isTyping } from './lib/root';
 import { t } from './lib/i18n';
 
 const LOADERS = {
@@ -37,6 +40,9 @@ export function App() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         paletteOpen.value = !paletteOpen.value;
+      } else if (e.key === '?' && !e.ctrlKey && !e.metaKey && !isTyping(e) && !dialogs.value.length && !paletteOpen.value) {
+        e.preventDefault();
+        openShortcuts();
       }
     };
     window.addEventListener('keydown', onKey);

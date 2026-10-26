@@ -44,37 +44,53 @@
     return (bytes / Math.pow(1024, i)).toFixed(i ? 1 : 0).replace(/\.0$/, '') + ' ' + units[i];
   };
 
-  /* View toggle & filter ------------------------------------------------ */
-  const list = $('#fs-items');
-  if (list) {
+  /* View toggle & search ------------------------------------------------ */
+  const content = $('#fs-items');
+  if (content) {
     const setView = (view) => {
-      list.dataset.view = view;
+      content.dataset.view = view;
       $$('.fs-seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
       store.set('view', view);
     };
-    setView(store.get('view') || 'grid');
+    setView(store.get('view') === 'list' ? 'list' : 'grid');
     $$('.fs-seg button').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 
     const filter = $('#fs-filter');
     const noRes = $('#fs-nores');
     if (filter) {
+      const fold = (str) => str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
       filter.addEventListener('input', () => {
-        const q = filter.value.trim().toLowerCase();
+        const q = fold(filter.value.trim());
         let shown = 0;
-        $$('.fs-item', list).forEach((li) => {
-          const ok = !q || li.dataset.name.indexOf(q) !== -1;
+        $$('.fs-item', content).forEach((li) => {
+          const ok = !q || fold(li.dataset.name).indexOf(q) !== -1;
           li.hidden = !ok;
           if (ok) shown++;
         });
+        $$('.fs-section', content).forEach((sec) => { sec.hidden = !$$('.fs-item', sec).some((li) => !li.hidden); });
         if (noRes) noRes.hidden = shown !== 0;
+      });
+      filter.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { filter.value = ''; filter.dispatchEvent(new Event('input')); }
       });
     }
   }
 
-  /* Lightbox -------------------------------------------------------------- */
+  /* Viewer ------------------------------------------------------------------ */
   const files = D.files || [];
   let lb = null;
   let current = -1;
+  let lastFocus = null;
+
+  const docArt = (f) => {
+    const inner = f.cat === 'video' || f.cat === 'audio' || f.cat === 'image'
+      ? h('span', { class: 'fs-doc-play' }, icon(f.cat === 'video' ? 'play' : f.cat === 'audio' ? 'music' : 'image'))
+      : h('span', { class: 'fs-doc-lines' });
+    return h('span', { class: 'fs-doc fs-doc--xl fs-doc--' + f.cat }, inner, f.ext ? h('b', { class: 'fs-doc-badge' }, f.ext.slice(0, 4).toUpperCase()) : null);
+  };
+  const downloadBtn = (f, label) => (D.canDownload
+    ? h('a', { class: 'fs-btn fs-btn--primary', href: link({ a: 'dl', p: f.rel }), rel: 'nofollow', title: T.download }, icon('download'), h('span', {}, label || T.download))
+    : null);
 
   const closePreview = () => {
     if (!lb) return;
@@ -83,6 +99,7 @@
     current = -1;
     document.body.style.overflow = '';
     document.removeEventListener('keydown', onKey);
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   };
   const onKey = (e) => {
     if (e.key === 'Escape') closePreview();
@@ -94,17 +111,17 @@
     openPreview((current + delta + files.length) % files.length);
   };
 
+  const INLINE_IMAGES = ['jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp', 'avif', 'bmp'];
   const stageFor = (f) => {
     const raw = link({ a: 'raw', p: f.rel });
     if (D.canPreview) {
-      if (f.cat === 'image' && f.ext !== 'svg' && f.ext !== 'heic' && f.ext !== 'tif' && f.ext !== 'tiff' && f.ext !== 'psd') {
-        return h('img', { src: raw, alt: f.name });
-      }
+      if (f.cat === 'image' && INLINE_IMAGES.indexOf(f.ext) !== -1) return h('img', { src: raw, alt: f.label || f.name });
       if (f.cat === 'video') return h('video', { src: raw, controls: true, autoplay: true, playsinline: true });
-      if (f.cat === 'audio') return h('audio', { src: raw, controls: true, autoplay: true });
+      if (f.cat === 'audio') return h('div', { class: 'fs-lb-empty' }, docArt(f), h('audio', { src: raw, controls: true, autoplay: true }));
       if (f.cat === 'pdf') return h('iframe', { src: raw, title: f.name });
       if (f.cat === 'code' && f.size < 2 * 1024 * 1024) {
-        const pre = h('pre', {}, T.loading || '…');
+        const plain = ['txt', 'md', 'markdown', 'log', 'text', ''].indexOf(f.ext) !== -1;
+        const pre = h('pre', { class: 'fs-lb-paper' + (plain ? '' : ' is-code') }, T.loading || '…');
         fetch(raw, { credentials: 'same-origin' })
           .then((r) => (r.ok ? r.text() : Promise.reject()))
           .then((txt) => { pre.textContent = txt; })
@@ -112,32 +129,28 @@
         return pre;
       }
     }
-    return h('div', { class: 'fs-lb-empty' },
-      h('span', { class: 'fs-tile fs-tile--' + f.cat }, icon('file'), f.ext ? h('b', {}, f.ext.slice(0, 4).toUpperCase()) : null),
-      h('p', {}, T.noPreview));
+    return h('div', { class: 'fs-lb-empty' }, docArt(f), h('p', {}, T.noPreview), downloadBtn(f));
   };
 
   const openPreview = (index) => {
     const f = files[index];
     if (!f) return;
+    if (!lb) lastFocus = document.activeElement;
     if (lb) lb.remove();
     current = index;
-    const actions = [];
-    if (D.canDownload) {
-      actions.push(h('a', { class: 'fs-btn fs-btn--primary', href: link({ a: 'dl', p: f.rel }), rel: 'nofollow' }, icon('download'), h('span', {}, T.download)));
-    }
-    actions.push(h('button', { class: 'fs-btn fs-lb-icon', type: 'button', 'aria-label': T.close, onclick: closePreview }, icon('x')));
+    const sub = [f.type, f.sizeH].filter(Boolean).join(' · ') + (files.length > 1 ? ' · ' + (T.position || '%1$s / %2$s').replace('%1$s', index + 1).replace('%2$s', files.length) : '');
     const stage = h('div', { class: 'fs-lb-stage', onclick: (e) => { if (e.target === stage) closePreview(); } }, stageFor(f));
     if (files.length > 1) {
       stage.append(
-        h('button', { class: 'fs-lb-nav fs-lb-nav--prev', type: 'button', 'aria-label': T.previous, onclick: () => step(-1) }, icon('chevron')),
-        h('button', { class: 'fs-lb-nav fs-lb-nav--next', type: 'button', 'aria-label': T.next, onclick: () => step(1) }, icon('chevron'))
+        h('button', { class: 'fs-lb-nav fs-lb-nav--prev', type: 'button', 'aria-label': T.previous, title: T.previous, onclick: () => step(-1) }, icon('chevron')),
+        h('button', { class: 'fs-lb-nav fs-lb-nav--next', type: 'button', 'aria-label': T.next, title: T.next, onclick: () => step(1) }, icon('chevron'))
       );
     }
-    lb = h('div', { class: 'fs-lb', role: 'dialog', 'aria-modal': 'true', 'aria-label': f.name },
+    lb = h('div', { class: 'fs-lb', role: 'dialog', 'aria-modal': 'true', 'aria-label': f.label || f.name },
       h('div', { class: 'fs-lb-top' },
-        h('div', { class: 'fs-lb-title' }, f.name, h('small', {}, formatSize(f.size) + ' · ' + (index + 1) + '/' + files.length)),
-        actions),
+        h('div', { class: 'fs-lb-title' }, h('strong', { title: f.name }, f.label || f.name), h('small', {}, sub)),
+        downloadBtn(f),
+        h('button', { class: 'fs-btn fs-lb-icon', type: 'button', 'aria-label': T.close, title: T.close, onclick: closePreview }, icon('x'))),
       stage);
     let touchX = null;
     lb.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
@@ -149,6 +162,7 @@
     });
     document.body.append(lb);
     document.body.style.overflow = 'hidden';
+    document.removeEventListener('keydown', onKey);
     document.addEventListener('keydown', onKey);
     const closeBtn = $('.fs-lb-icon', lb);
     if (closeBtn) closeBtn.focus({ preventScroll: true });
@@ -310,6 +324,11 @@
 
   if (nameInput) nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
   $('#fs-browse').addEventListener('click', () => input.click());
+  $$('[data-pick]').forEach((b) => b.addEventListener('click', () => {
+    drop.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (nameInput && !nameInput.value.trim()) nameInput.focus({ preventScroll: true });
+    else input.click();
+  }));
   input.addEventListener('change', () => { enqueue(Array.from(input.files)); input.value = ''; });
   ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
   ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); if (ev === 'drop' || !drop.contains(e.relatedTarget)) drop.classList.remove('is-over'); }));

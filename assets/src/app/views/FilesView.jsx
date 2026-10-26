@@ -15,7 +15,7 @@ import {
 import { openMenu, dialogs, menu } from '../lib/ui';
 import {
   itemsFor, newFolder, newFile, uploadFiles, uploadFolder, uploadFromUrl, openEntry, goUp, rename, remove, copy, paste,
-  download, share, preview, runSearch, clearSearch, moveToFolder, duplicate,
+  download, share, preview, runSearch, clearSearch, moveToFolder, duplicate, openShortcuts,
 } from '../lib/actions';
 import { onUploaded } from '../lib/upload';
 import { isTyping } from '../lib/root';
@@ -141,7 +141,8 @@ function StatusBar() {
           </span>
         ) : null}
         {profile.readOnly ? <Badge tone="warning" icon="lock">{t('Read-only')}</Badge> : null}
-        <button type="button" class="flr-status-kbd" onClick={() => { paletteOpen.value = true; }}><Kbd>{modKey}</Kbd><Kbd>K</Kbd></button>
+        <button type="button" class="flr-status-kbd" title={t('Keyboard shortcuts')} aria-label={t('Keyboard shortcuts')} onClick={openShortcuts}><Kbd>?</Kbd></button>
+        <button type="button" class="flr-status-kbd" title={t('Command palette')} aria-label={t('Command palette')} onClick={() => { paletteOpen.value = true; }}><Kbd>{modKey}</Kbd><Kbd>K</Kbd></button>
       </span>
     </footer>
   );

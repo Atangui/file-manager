@@ -35,10 +35,16 @@ const add = (msgid, extra, ref, comment) => {
 for (const file of files.sort()) {
   const code = readFileSync(file, 'utf8');
   const lineOf = (idx) => code.slice(0, idx).split('\n').length;
+  // Nearest "/* translators: … */" comment, only if no statement or other string sits in between.
   const commentBefore = (idx) => {
-    const before = code.slice(Math.max(0, idx - 400), idx);
-    const m = before.match(/\/\*\s*translators:\s*([\s\S]*?)\*\/\s*(?:[^;{}]*?)$/);
-    return m ? 'translators: ' + m[1].trim() : '';
+    const before = code.slice(Math.max(0, idx - 600), idx);
+    const start = before.lastIndexOf('/* translators:');
+    if (start === -1) return '';
+    const end = before.indexOf('*/', start);
+    if (end === -1) return '';
+    const gap = before.slice(end + 2);
+    if (/[;{}]/.test(gap) || gap.includes("'filora'")) return '';
+    return 'translators: ' + before.slice(start + 15, end).trim();
   };
   const ref = (idx) => relative('.', file) + ':' + lineOf(idx);
   for (const fn of FUNCS.single) {

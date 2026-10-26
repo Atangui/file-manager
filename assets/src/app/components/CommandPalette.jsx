@@ -8,7 +8,7 @@ import { t } from '../lib/i18n';
 import { C, can, isAdmin, profile } from '../lib/config';
 import { navigate, prefs, setPref, entries, cwd, route, fullscreen, refresh, toggleDetails } from '../lib/store';
 import { fuzzy, baseName } from '../lib/files';
-import { newFolder, newFile, uploadFiles, uploadFolder, uploadFromUrl, openEntry, share, runSearch } from '../lib/actions';
+import { newFolder, newFile, uploadFiles, uploadFolder, uploadFromUrl, openEntry, share, runSearch, openShortcuts } from '../lib/actions';
 
 export const paletteOpen = signal(false);
 
@@ -34,6 +34,7 @@ function commands() {
   add(t('Dark theme'), 'moon', () => setPref('theme', 'dark'), t('View'));
   add(t('System theme'), 'monitor', () => setPref('theme', 'auto'), t('View'));
   if (!C.frontend) add(fullscreen.value ? t('Exit full screen') : t('Full screen'), fullscreen.value ? 'compress' : 'expand', () => { fullscreen.value = !fullscreen.value; }, t('View'));
+  add(t('Keyboard shortcuts'), 'keyboard', openShortcuts, t('Help'), '?');
   const go = t('Go to');
   add(t('Files'), 'folder', () => navigate('files', '/'), go);
   if (can('share')) add(t('Shared links'), 'link', () => navigate('shares'), go);

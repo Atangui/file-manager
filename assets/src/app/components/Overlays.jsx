@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'preact/hooks';
 import { dialogs, closeDialog, menu, closeMenu, toasts, dismiss } from '../lib/ui';
 import { Icon } from './Icon';
-import { Button, IconButton } from './ui';
+import { Button, IconButton, keyLabel } from './ui';
 import { t } from '../lib/i18n';
 import { activeElement, eventTarget } from '../lib/root';
 
@@ -14,6 +14,8 @@ export function Dialog({ title, subtitle, icon, onClose, children, footer, size 
     const el = ref.current;
     const previous = activeElement();
     const first = el && (el.querySelector('[data-autofocus]') || el.querySelector('.flr-dialog-body ' + FOCUSABLE) || el.querySelector(FOCUSABLE));
+    // Focus the dialog at once (so Escape works immediately), then its first field.
+    if (el) el.focus({ preventScroll: true });
     if (first) setTimeout(() => first.focus({ preventScroll: true }), 30);
     const onKey = (e) => {
       if (e.key === 'Escape' && dismissable) {
@@ -25,7 +27,10 @@ export function Dialog({ title, subtitle, icon, onClose, children, footer, size 
         const firstEl = items[0];
         const lastEl = items[items.length - 1];
         const current = activeElement();
-        if (e.shiftKey && current === firstEl) {
+        if (current === el || !el.contains(current)) {
+          e.preventDefault();
+          (e.shiftKey ? lastEl : firstEl).focus();
+        } else if (e.shiftKey && current === firstEl) {
           e.preventDefault();
           lastEl.focus();
         } else if (!e.shiftKey && current === lastEl) {
@@ -42,7 +47,7 @@ export function Dialog({ title, subtitle, icon, onClose, children, footer, size 
   }, []);
   return (
     <div class="flr-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget && dismissable) onClose(); }}>
-      <div class={'flr-dialog flr-dialog--' + size + ' ' + cls} role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : undefined} ref={ref}>
+      <div class={'flr-dialog flr-dialog--' + size + ' ' + cls} role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : undefined} tabIndex={-1} ref={ref}>
         {title ? (
           <header class="flr-dialog-head">
             {icon ? <span class="flr-dialog-icon"><Icon name={icon} size={20} /></span> : null}
@@ -88,8 +93,12 @@ export function ContextMenu() {
     if (y + r.height > window.innerHeight - 8) y = Math.max(8, Math.min(m.y - r.height, window.innerHeight - r.height - 8));
     setPos({ left: x, top: y });
     setActive(-1);
-    ref.current.focus({ preventScroll: true });
   }, [m]);
+
+  // Focus once positioned: a visibility:hidden element cannot take focus.
+  useEffect(() => {
+    if (pos && ref.current) ref.current.focus({ preventScroll: true });
+  }, [pos]);
 
   useEffect(() => {
     if (!m) return;
@@ -98,10 +107,19 @@ export function ContextMenu() {
       closeMenu();
     };
     const onScroll = () => closeMenu();
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
     window.addEventListener('mousedown', close, true);
     window.addEventListener('resize', onScroll);
     window.addEventListener('blur', onScroll);
     return () => {
+      window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('mousedown', close, true);
       window.removeEventListener('resize', onScroll);
       window.removeEventListener('blur', onScroll);
@@ -156,7 +174,7 @@ export function ContextMenu() {
           >
             <Icon name={it.icon || 'more-h'} size={17} class={it.icon ? '' : 'is-blank'} />
             <span class="flr-menu-label">{it.label}</span>
-            {it.kbd ? <span class="flr-menu-kbd">{it.kbd}</span> : null}
+            {it.kbd ? <span class="flr-menu-kbd">{keyLabel(it.kbd)}</span> : null}
           </button>
         )
       )}
