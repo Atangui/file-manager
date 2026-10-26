@@ -18,6 +18,7 @@ import {
   download, share, preview, runSearch, clearSearch, moveToFolder, duplicate,
 } from '../lib/actions';
 import { onUploaded } from '../lib/upload';
+import { isTyping } from '../lib/root';
 
 function NewMenu(e) {
   openMenu(e, [
@@ -151,9 +152,7 @@ function useShortcuts() {
   useEffect(() => {
     const onKey = (e) => {
       if (route.value.view !== 'files' || dialogs.value.length || menu.value || paletteOpen.value) return;
-      const target = e.target;
-      const typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
-      if (typing) return;
+      if (isTyping(e)) return;
       const mod = e.ctrlKey || e.metaKey;
       const sel = selectedEntries.value;
       const key = e.key;

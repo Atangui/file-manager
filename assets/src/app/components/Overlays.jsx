@@ -4,6 +4,7 @@ import { dialogs, closeDialog, menu, closeMenu, toasts, dismiss } from '../lib/u
 import { Icon } from './Icon';
 import { Button, IconButton } from './ui';
 import { t } from '../lib/i18n';
+import { activeElement, eventTarget } from '../lib/root';
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
@@ -11,7 +12,7 @@ export function Dialog({ title, subtitle, icon, onClose, children, footer, size 
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
-    const previous = document.activeElement;
+    const previous = activeElement();
     const first = el && (el.querySelector('[data-autofocus]') || el.querySelector('.flr-dialog-body ' + FOCUSABLE) || el.querySelector(FOCUSABLE));
     if (first) setTimeout(() => first.focus({ preventScroll: true }), 30);
     const onKey = (e) => {
@@ -23,10 +24,11 @@ export function Dialog({ title, subtitle, icon, onClose, children, footer, size 
         if (!items.length) return;
         const firstEl = items[0];
         const lastEl = items[items.length - 1];
-        if (e.shiftKey && document.activeElement === firstEl) {
+        const current = activeElement();
+        if (e.shiftKey && current === firstEl) {
           e.preventDefault();
           lastEl.focus();
-        } else if (!e.shiftKey && document.activeElement === lastEl) {
+        } else if (!e.shiftKey && current === lastEl) {
           e.preventDefault();
           firstEl.focus();
         }
@@ -92,7 +94,7 @@ export function ContextMenu() {
   useEffect(() => {
     if (!m) return;
     const close = (e) => {
-      if (ref.current && ref.current.contains(e.target)) return;
+      if (ref.current && (e.composedPath ? e.composedPath().includes(ref.current) : ref.current.contains(eventTarget(e)))) return;
       closeMenu();
     };
     const onScroll = () => closeMenu();

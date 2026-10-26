@@ -69,6 +69,8 @@
 .flr {
   font: 14px/1.45 var(--flr-font);
   color: var(--flr-text);
+  /* Do not inherit typography quirks from the theme (front-end embed). */
+  letter-spacing: normal; word-spacing: normal; text-transform: none; text-align: start; text-indent: 0; text-shadow: none; font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -128,8 +130,10 @@
 .flr-host { height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)); height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px)); min-height: 520px; position: relative; }
 .flr-host.is-fullscreen { position: fixed; inset: 0; z-index: 100000; height: 100vh; height: 100dvh; }
 html.filora-fullscreen, html.filora-fullscreen body { overflow: hidden; }
+#filora-app.flr-host--embed:focus, #filora-app.flr-host--embed:focus-within { outline: none !important; box-shadow: none !important; }
 .flr-host--embed { min-height: 480px; border: 1px solid var(--flr-border, #e4e7ec); border-radius: 16px; overflow: hidden; margin: 1.5em 0; }
 .flr-boot { display: grid; place-items: center; height: 100%; }
+.flr-shadow-root { height: 100%; position: relative; }
 .flr-boot span, .flr-spinner {
   display: inline-block; width: 22px; height: 22px; border-radius: 50%;
   border: 2px solid color-mix(in srgb, currentColor 18%, transparent); border-top-color: currentColor;
