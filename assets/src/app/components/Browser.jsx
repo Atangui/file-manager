@@ -80,6 +80,73 @@ export function Browser() {
   const last = Math.min(rows, Math.ceil((vp.top + vp.height) / itemH) + overscan);
   const visible = list.slice(first * cols, last * cols);
 
+  // Rubber-band (lasso) selection, computed from layout maths so it also works on
+  // rows that are not rendered (virtualized).
+  const [lasso, setLasso] = useState(null);
+  const suppressClick = useRef(false);
+  const layout = useRef({});
+  layout.current = { view, cols, rowH, cardH, headerH, pad, width: vp.width, list };
+  const hitTest = (r) => {
+    const L = layout.current;
+    const top = Math.min(r.y0, r.y1);
+    const bottom = Math.max(r.y0, r.y1);
+    const left = Math.min(r.x0, r.x1);
+    const right = Math.max(r.x0, r.x1);
+    const out = [];
+    if (L.view === 'list') {
+      const a = Math.max(0, Math.floor((top - L.headerH) / L.rowH));
+      const b = Math.min(L.list.length - 1, Math.floor((bottom - L.headerH) / L.rowH));
+      for (let i = a; i <= b; i++) out.push(L.list[i].path);
+    } else {
+      const cellW = (L.width - 24) / L.cols;
+      const r0 = Math.max(0, Math.floor((top - L.pad) / L.cardH));
+      const r1 = Math.floor((bottom - L.pad) / L.cardH);
+      const c0 = Math.max(0, Math.floor((left - 12) / cellW));
+      const c1 = Math.min(L.cols - 1, Math.floor((right - 12) / cellW));
+      for (let row = r0; row <= r1; row++) {
+        for (let c = c0; c <= c1; c++) {
+          const i = row * L.cols + c;
+          if (i < L.list.length) out.push(L.list[i].path);
+        }
+      }
+    }
+    return out;
+  };
+  const onLassoStart = (e) => {
+    if (e.button !== 0 || !list.length) return;
+    const target = e.target;
+    if (target.closest('[data-path]') || target.closest('.flr-list-head') || target.closest('button, input, a')) return;
+    const el = ref.current;
+    const box = el.getBoundingClientRect();
+    if (e.clientX - box.left > el.clientWidth || e.clientY - box.top > el.clientHeight) return; // Scrollbar.
+    e.preventDefault();
+    el.focus({ preventScroll: true });
+    const x0 = e.clientX - box.left + el.scrollLeft;
+    const y0 = e.clientY - box.top + el.scrollTop;
+    const base = e.ctrlKey || e.metaKey || e.shiftKey ? new Set(selection.value) : new Set();
+    let moved = false;
+    const move = (ev) => {
+      const b = el.getBoundingClientRect();
+      if (ev.clientY > b.bottom - 24) el.scrollTop += 16;
+      else if (ev.clientY < b.top + 24) el.scrollTop -= 16;
+      const r = { x0, y0, x1: ev.clientX - b.left + el.scrollLeft, y1: ev.clientY - b.top + el.scrollTop };
+      if (!moved && Math.abs(r.x1 - x0) + Math.abs(r.y1 - y0) < 6) return;
+      moved = true;
+      setLasso(r);
+      const next = new Set(base);
+      hitTest(r).forEach((p) => next.add(p));
+      selection.value = next;
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      setLasso(null);
+      if (moved) suppressClick.current = true;
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
   // Keep the focused item in view.
   useEffect(() => {
     const el = ref.current;
@@ -341,7 +408,14 @@ export function Browser() {
       class={'flr-browser flr-browser--' + view + (overlay ? ' is-dropping' : '')}
       ref={ref}
       tabIndex={0}
-      onClick={(e) => { if (e.target === e.currentTarget || e.target.classList.contains('flr-list') || e.target.classList.contains('flr-grid')) clearSelection(); }}
+      onMouseDown={onLassoStart}
+      onClick={(e) => {
+        if (suppressClick.current) {
+          suppressClick.current = false;
+          return;
+        }
+        if (e.target === e.currentTarget || e.target.classList.contains('flr-list') || e.target.classList.contains('flr-grid')) clearSelection();
+      }}
       onContextMenu={(e) => { if (!e.target.closest('[data-path]')) openMenu(e, itemsForFolder()); }}
       onDragEnter={onAreaDragEnter}
       onDragLeave={onAreaDragLeave}
@@ -350,6 +424,12 @@ export function Browser() {
       data-browser
     >
       {body}
+      {lasso ? (
+        <div class="flr-lasso" style={{
+          left: Math.min(lasso.x0, lasso.x1) + 'px', top: Math.min(lasso.y0, lasso.y1) + 'px',
+          width: Math.abs(lasso.x1 - lasso.x0) + 'px', height: Math.abs(lasso.y1 - lasso.y0) + 'px',
+        }} />
+      ) : null}
       {loading.value && listing.value ? <div class="flr-loading-bar" /> : null}
       {overlay ? (
         <div class="flr-drop-overlay">

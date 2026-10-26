@@ -41,6 +41,11 @@ export const goUp = () => {
   if (cwd.value !== '/') navigate('files', parentPath(cwd.value));
 };
 
+export async function openShortcuts() {
+  const { ShortcutsDialog } = await import('../dialogs/Shortcuts');
+  openDialog(ShortcutsDialog);
+}
+
 export async function preview(entry, list) {
   const { PreviewDialog } = await import('../dialogs/Preview');
   const items = (list || entries.value).filter((e) => e.type === 'file');

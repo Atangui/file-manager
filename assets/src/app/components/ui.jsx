@@ -1,5 +1,6 @@
 // Small, reusable UI primitives.
 import { Icon } from './Icon';
+import { t } from '../lib/i18n';
 
 export function Button({ variant = 'default', size, icon, iconRight, loading, children, class: cls = '', ...rest }) {
   const classes = ['flr-btn', 'flr-btn--' + variant, size ? 'flr-btn--' + size : '', !children ? 'flr-btn--icon' : '', cls].filter(Boolean).join(' ');
@@ -134,3 +135,13 @@ export function Card({ title, icon, actions, children, class: cls = '', descript
 
 export const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 export const modKey = isMac ? '⌘' : 'Ctrl';
+
+const keyNames = () => ({
+  Enter: t('Enter'), Space: t('Space'), Backspace: t('Backspace'), Esc: t('Esc'),
+  Del: t('Del'), Home: t('Home'), End: t('End'), Shift: t('Shift'),
+});
+/** Localized key combination, e.g. "Shift+Del" → "Maj+Suppr". */
+export const keyLabel = (combo) => {
+  const names = keyNames();
+  return combo.split('+').map((k) => names[k] || k).join('+');
+};

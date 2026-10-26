@@ -121,6 +121,7 @@ final class ShareRouter {
 	 */
 	private function dispatch() {
 		Http::private_headers();
+		I18n::use_visitor_locale();
 		$ip = Http::ip();
 
 		if ( ! Settings::value( 'sharing', 'enabled', true ) ) {
@@ -562,10 +563,11 @@ final class ShareRouter {
 	/**
 	 * Visible children of a folder, folders first, natural order.
 	 *
-	 * @param string $dir Folder.
+	 * @param string $dir       Folder.
+	 * @param bool   $summaries Add a content summary to sub-folders (page view).
 	 * @return array
 	 */
-	private function children( $dir ) {
+	private function children( $dir, $summaries = false ) {
 		$out = array();
 		foreach ( (array) @scandir( $dir ) as $name ) { // phpcs:ignore
 			if ( '.' === $name || '..' === $name || '' === $name || '.' === $name[0] ) {
@@ -597,6 +599,15 @@ final class ShareRouter {
 				break;
 			}
 		}
+		if ( $summaries ) {
+			$budget = 48; // Folder cards with a summary (each one scans its folder).
+			foreach ( $out as &$item ) {
+				if ( $item['dir'] && $budget-- > 0 ) {
+					$item['summary'] = $this->summary( $item['abs'] );
+				}
+			}
+			unset( $item );
+		}
 		usort(
 			$out,
 			static function ( $a, $b ) {
@@ -606,6 +617,52 @@ final class ShareRouter {
 				return strnatcasecmp( $a['name'], $b['name'] );
 			}
 		);
+		return $out;
+	}
+
+	/**
+	 * What a sub-folder contains: counts and a few photos for its card.
+	 *
+	 * @param string $dir Folder.
+	 * @return array{dirs:int,files:int,images:int,thumbs:string[]}
+	 */
+	private function summary( $dir ) {
+		$out  = array(
+			'dirs'   => 0,
+			'files'  => 0,
+			'images' => 0,
+			'thumbs' => array(),
+		);
+		$seen = 0;
+		foreach ( (array) @scandir( $dir ) as $name ) { // phpcs:ignore
+			if ( '' === $name || '.' === $name[0] ) {
+				continue;
+			}
+			if ( ++$seen > 200 ) {
+				break;
+			}
+			$abs = $dir . '/' . $name;
+			if ( is_link( $abs ) ) {
+				$real = Paths::real( $abs );
+				if ( ! $real || ! Paths::is_within( $real, $this->root ) ) {
+					continue;
+				}
+			}
+			if ( ! $this->visible( $abs ) ) {
+				continue;
+			}
+			if ( is_dir( $abs ) ) {
+				++$out['dirs'];
+				continue;
+			}
+			++$out['files'];
+			if ( 'image' === Mime::category( $name ) ) {
+				++$out['images'];
+				if ( count( $out['thumbs'] ) < 3 && Mime::is_thumbable( $name ) ) {
+					$out['thumbs'][] = Paths::relative( $abs, $this->root );
+				}
+			}
+		}
 		return $out;
 	}
 
@@ -693,7 +750,7 @@ final class ShareRouter {
 		}
 		$items = array();
 		if ( 'dir' === $this->share['type'] && $this->can_browse() ) {
-			$items = $this->children( $dir );
+			$items = $this->children( $dir, true );
 		}
 		$this->render(
 			'page',

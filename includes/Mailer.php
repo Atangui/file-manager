@@ -62,6 +62,22 @@ final class Mailer {
 	 * @param array  $details Details (files, email, name).
 	 */
 	public static function notify_owner( array $share, $event, array $details ) {
+		$locale = I18n::use_site_locale();
+		try {
+			self::send_owner_notice( $share, $event, $details );
+		} finally {
+			I18n::restore( $locale );
+		}
+	}
+
+	/**
+	 * Build and send the notification (in the site language).
+	 *
+	 * @param array  $share   Share row.
+	 * @param string $event   Event.
+	 * @param array  $details Details.
+	 */
+	private static function send_owner_notice( array $share, $event, array $details ) {
 		$options = Shares::options( $share );
 		$notify  = $options['notify'];
 		if ( 'none' === $notify || ( 'uploads' === $notify && 'upload' !== $event ) ) {

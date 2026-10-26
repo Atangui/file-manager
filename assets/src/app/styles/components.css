@@ -123,6 +123,7 @@
 .flr-backdrop { position: fixed; inset: 0; z-index: 100050; display: grid; place-items: center; padding: 20px; background: rgb(10 12 18 / 42%); backdrop-filter: blur(3px); animation: flr-fade .15s ease; }
 .flr-backdrop--top { align-items: start; padding-top: min(14vh, 120px); }
 .flr-dialog { display: flex; flex-direction: column; width: 100%; max-height: calc(100vh - 40px); background: var(--flr-surface); color: var(--flr-text); border-radius: var(--flr-radius-xl); box-shadow: var(--flr-shadow-lg); border: 1px solid var(--flr-border); animation: flr-pop .2s var(--flr-ease); overflow: hidden; }
+.flr-dialog:focus { outline: none; }
 .flr-dialog--sm { max-width: 440px; }
 .flr-dialog--md { max-width: 560px; }
 .flr-dialog--lg { max-width: 720px; }
@@ -138,7 +139,7 @@
 .flr-dialog-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--flr-border); background: var(--flr-surface-2); }
 .flr-dialog-foot .flr-muted { font-size: 12.5px; max-width: 50%; }
 
-.flr-menu { position: fixed; z-index: 100080; min-width: 220px; max-width: 320px; max-height: min(520px, calc(100vh - 16px)); overflow: auto; padding: 5px; background: var(--flr-surface); border: 1px solid var(--flr-border); border-radius: 12px; box-shadow: var(--flr-shadow-lg); animation: flr-pop .12s var(--flr-ease); outline: none; }
+.flr-menu { position: fixed; z-index: 100080; min-width: 220px; max-width: 320px; max-height: calc(100vh - 16px); overflow: auto; padding: 5px; background: var(--flr-surface); border: 1px solid var(--flr-border); border-radius: 12px; box-shadow: var(--flr-shadow-lg); animation: flr-pop .12s var(--flr-ease); outline: none; }
 .flr-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; border: 0; border-radius: 7px; background: transparent; color: var(--flr-text); font-size: 13.5px; text-align: start; }
 .flr-menu-item .flr-ico { color: var(--flr-text-2); }
 .flr-menu-item.is-active:not(:disabled), .flr-menu-item:hover:not(:disabled) { background: var(--flr-hover); }
@@ -181,3 +182,13 @@
 .flr-drag-ghost { position: fixed; top: -100px; left: -100px; padding: 6px 12px; border-radius: 8px; background: #4f46e5; color: #fff; font: 600 13px/1.3 system-ui, sans-serif; box-shadow: 0 8px 20px rgb(0 0 0 / 25%); white-space: nowrap; pointer-events: none; }
 .flr-inline { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 .flr-inline + .flr-inline { margin-inline-start: 10px; }
+
+/* Keyboard shortcuts sheet */
+.flr-shortcuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 28px; }
+.flr-shortcuts h3 { margin: 4px 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--flr-muted); }
+.flr-shortcuts dl { margin: 0 0 12px; }
+.flr-shortcut { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--flr-border); }
+.flr-shortcut:last-child { border-bottom: 0; }
+.flr-shortcut dt { color: var(--flr-text-2); font-size: 13px; }
+.flr-shortcut dd { margin: 0; display: inline-flex; gap: 4px; flex-shrink: 0; }
+.flr-shortcuts-tip { margin: 8px 0 0; font-size: 12.5px; }
