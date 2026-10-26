@@ -4,7 +4,7 @@ Tags: file manager, share files, client portal, secure download, code editor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,11 @@ Nginx ignores .htaccess files. Add the rule shown in Files → Security tools to
 Only the optional core integrity check contacts api.wordpress.org. There are no external fonts, CDNs or trackers.
 
 == Changelog ==
+
+= 1.0.1 =
+* Public share page redesigned for non-technical visitors; follows the visitor's language.
+* Security: script-capable types checked on every extension segment, trailing dots refused, ZIP extraction follows role rules, thumbnails disabled on download-limited links, 8-character share passwords.
+* Visible theme switch, Quick access (Vault, favorites) and Recent folders in the sidebar; lasso selection; keyboard shortcuts sheet.
 
 = 1.0.0 =
 * Initial release.
