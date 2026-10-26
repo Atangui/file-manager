@@ -1,0 +1,149 @@
+/* Design tokens, reset and WordPress admin integration. Everything is scoped under .flr */
+
+.flr {
+  --flr-accent: #4f46e5;
+  --flr-accent-hover: #4338ca;
+  --flr-accent-soft: rgb(79 70 229 / 10%);
+  --flr-accent-text: #4338ca;
+  --flr-on-accent: #fff;
+  --flr-bg: #f6f7f9;
+  --flr-surface: #ffffff;
+  --flr-surface-2: #f3f4f7;
+  --flr-surface-3: #eaecf1;
+  --flr-hover: rgb(15 23 42 / 4.5%);
+  --flr-border: #e4e7ec;
+  --flr-border-strong: #d0d5dd;
+  --flr-text: #111827;
+  --flr-text-2: #475069;
+  --flr-muted: #7a8296;
+  --flr-success: #16a34a;
+  --flr-warning: #d97706;
+  --flr-danger: #dc2626;
+  --flr-info: #2563eb;
+  --flr-selected: rgb(79 70 229 / 9%);
+  --flr-selected-strong: rgb(79 70 229 / 16%);
+  --flr-shadow-sm: 0 1px 2px rgb(16 24 40 / 6%);
+  --flr-shadow: 0 1px 3px rgb(16 24 40 / 6%), 0 8px 24px -6px rgb(16 24 40 / 10%);
+  --flr-shadow-lg: 0 24px 60px -12px rgb(16 24 40 / 28%), 0 2px 6px rgb(16 24 40 / 6%);
+  --flr-radius-sm: 8px;
+  --flr-radius: 10px;
+  --flr-radius-lg: 14px;
+  --flr-radius-xl: 18px;
+  --flr-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --flr-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --flr-ease: cubic-bezier(.2, .8, .2, 1);
+  --flr-sidebar: 252px;
+  --flr-details: 330px;
+  color-scheme: light;
+}
+
+.flr[data-theme="dark"] {
+  --flr-accent: #6366f1;
+  --flr-accent-hover: #7477f5;
+  --flr-accent-soft: rgb(124 127 245 / 16%);
+  --flr-accent-text: #a5a8ff;
+  --flr-bg: #0c0e13;
+  --flr-surface: #14171e;
+  --flr-surface-2: #1a1e27;
+  --flr-surface-3: #232834;
+  --flr-hover: rgb(255 255 255 / 5%);
+  --flr-border: #252a35;
+  --flr-border-strong: #343a48;
+  --flr-text: #eceef4;
+  --flr-text-2: #b6bccc;
+  --flr-muted: #858ca0;
+  --flr-success: #34d399;
+  --flr-warning: #fbbf24;
+  --flr-danger: #f87171;
+  --flr-info: #60a5fa;
+  --flr-selected: rgb(124 127 245 / 13%);
+  --flr-selected-strong: rgb(124 127 245 / 24%);
+  --flr-shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --flr-shadow: 0 1px 3px rgb(0 0 0 / 40%), 0 10px 30px -10px rgb(0 0 0 / 60%);
+  --flr-shadow-lg: 0 30px 70px -16px rgb(0 0 0 / 75%), 0 0 0 1px rgb(255 255 255 / 4%);
+  color-scheme: dark;
+}
+
+/* Reset inside the app (WordPress admin styles are aggressive). */
+.flr, .flr * , .flr *::before, .flr *::after { box-sizing: border-box; }
+.flr {
+  font: 14px/1.45 var(--flr-font);
+  color: var(--flr-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+/* Element resets use :where() (zero specificity) so component classes always win,
+   while still beating wp-admin's own element rules thanks to source order. */
+:where(.flr) :is(h1, h2, h3, h4, h5, p) { margin: 0; color: inherit; font-weight: 600; font-size: inherit; line-height: inherit; }
+:where(.flr) p { font-weight: 400; }
+:where(.flr) a, :where(.flr) a:hover, :where(.flr) a:active, :where(.flr) a:focus { color: inherit; text-decoration: none; box-shadow: none; outline: none; }
+:where(.flr) button:focus { box-shadow: none; }
+:where(.flr) button { font: inherit; color: inherit; cursor: pointer; }
+:where(.flr) button:disabled { cursor: default; }
+:where(.flr) :is(ul, ol) { margin: 0; padding: 0; list-style: none; }
+:where(.flr) li { margin: 0; }
+:where(.flr) :is(code, pre, kbd) { font-family: var(--flr-mono); }
+:where(.flr) code { font-size: 12px; background: none; padding: 0; margin: 0; color: inherit; }
+:where(.flr) img { max-width: 100%; }
+:where(.flr) :is(input, select, textarea) { font: inherit; color: inherit; }
+.flr input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px; min-width: 16px;
+  border: 1.5px solid var(--flr-border-strong); border-radius: 5px; background: var(--flr-surface);
+  display: inline-grid; place-items: center; cursor: pointer; box-shadow: none; transition: background .12s, border-color .12s;
+}
+.flr input[type="checkbox"]::before { content: ""; width: 9px; height: 5px; border: 2px solid #fff; border-top: 0; border-right: 0; transform: translateY(-1px) rotate(-45deg) scale(0); transition: transform .12s var(--flr-ease); margin: 0; float: none; }
+.flr input[type="checkbox"]:checked { background: var(--flr-accent); border-color: var(--flr-accent); }
+.flr input[type="checkbox"]:checked::before { transform: translateY(-1px) rotate(-45deg) scale(1); }
+.flr input[type="checkbox"]:indeterminate { background: var(--flr-accent); border-color: var(--flr-accent); }
+.flr input[type="checkbox"]:indeterminate::before { border-left: 0; transform: none; width: 8px; height: 0; border-bottom-width: 2px; }
+.flr :focus-visible, .flr a:focus-visible { outline: 2px solid var(--flr-accent); outline-offset: 2px; }
+
+.flr-ico { flex: none; display: block; }
+.flr-ico.is-blank { visibility: hidden; }
+.flr-muted { color: var(--flr-muted); }
+.flr-small { font-size: 12.5px; }
+.flr-mono { font-family: var(--flr-mono) !important; font-size: 13px; }
+.flr-nowrap { white-space: nowrap; }
+.flr-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; min-width: 0; }
+.flr-grow { flex: 1; }
+.flr-pad { padding: 16px; }
+.flr-mt { margin-top: 10px; }
+.flr-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.flr-row--wrap { flex-wrap: wrap; }
+.flr-row--center { justify-content: center; }
+.flr-row--top { align-items: flex-start; }
+.flr-row > .flr-field { flex: 1; }
+.flr-center-fill { display: grid; place-items: center; min-height: 180px; height: 100%; width: 100%; }
+.flr-link { background: none; border: 0; padding: 0; color: var(--flr-accent-text); font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-align: start; }
+.flr-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.flr-link.flr-muted { color: var(--flr-muted); }
+.flr-ok-text { color: var(--flr-success); display: flex; align-items: center; gap: 6px; }
+
+/* WordPress admin integration ------------------------------------------- */
+.filora-screen #wpcontent { padding-inline-start: 0; }
+.filora-screen #wpbody-content { padding-bottom: 0; }
+.filora-screen #wpfooter { display: none; }
+.filora-screen .update-nag, .filora-screen #screen-meta-links { display: none; }
+.flr-host { height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)); height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px)); min-height: 520px; position: relative; }
+.flr-host.is-fullscreen { position: fixed; inset: 0; z-index: 100000; height: 100vh; height: 100dvh; }
+html.filora-fullscreen, html.filora-fullscreen body { overflow: hidden; }
+.flr-host--embed { min-height: 480px; border: 1px solid var(--flr-border, #e4e7ec); border-radius: 16px; overflow: hidden; margin: 1.5em 0; }
+.flr-boot { display: grid; place-items: center; height: 100%; }
+.flr-boot span, .flr-spinner {
+  display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 18%, transparent); border-top-color: currentColor;
+  animation: flr-spin .7s linear infinite; color: var(--flr-accent, #4f46e5); flex: none;
+}
+@media screen and (max-width: 782px) {
+  .flr-host { height: calc(100dvh - var(--wp-admin--admin-bar--height, 46px)); }
+}
+
+@keyframes flr-spin { to { transform: rotate(360deg); } }
+@keyframes flr-fade { from { opacity: 0; } }
+@keyframes flr-pop { from { opacity: 0; transform: translateY(6px) scale(.985); } }
+@keyframes flr-slide-up { from { opacity: 0; transform: translateY(12px); } }
+@keyframes flr-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) {
+  .flr *, .flr *::before, .flr *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
