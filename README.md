@@ -25,11 +25,12 @@ Il reprend toutes les fonctionnalités de Filester (navigation dans l’arboresc
 
 **Interface**
 - Application monopage ultra légère (Preact + signals, compilée avec esbuild) : ~11 Ko gzip au chargement, le reste (éditeur, réglages, outils…) est chargé à la demande.
-- Thème clair / sombre / système, densité compacte, design moderne et fluide, responsive (mobile et tablette).
+- Thème clair / sombre / comme l’ordinateur (sélecteur en bas de la barre latérale et dans le menu **Affichage** de la barre du haut), densité compacte, design moderne et fluide, responsive (mobile et tablette).
 - Liste ou grille **virtualisées** (des dizaines de milliers de fichiers restent fluides), miniatures d’images générées et mises en cache côté serveur.
 - Glisser-déposer : fichiers **et dossiers** depuis l’ordinateur, déplacement interne vers un dossier, le fil d’Ariane ou l’arborescence (Alt/Ctrl = copier).
 - Menu contextuel, sélection multiple (Ctrl/Cmd, Maj), raccourcis clavier, **palette de commandes** (Ctrl/Cmd + K) pour tout faire au clavier.
-- Panneau de détails (aperçu, métadonnées, URL publique, liens de partage, versions), favoris, dossiers récents, quota.
+- Barre latérale avec **Accès rapides** (raccourci vers le **Coffre-fort** et vos favoris : clic droit sur un dossier → « Ajouter aux favoris »), **dossiers récents**, arborescence et jauge de quota (pour les rôles qui en ont un).
+- Panneau de détails (aperçu, métadonnées, URL publique, liens de partage, versions).
 - Prévisualisation rapide (barre d’espace) : images, vidéos, audio, PDF, texte/code, contenu des ZIP, polices.
 
 **Gestion des fichiers**

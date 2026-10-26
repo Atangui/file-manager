@@ -48,6 +48,11 @@ function ViewMenu(e) {
     { label: p.density === 'compact' ? t('Comfortable density') : t('Compact density'), icon: 'list', run: () => setPref('density', p.density === 'compact' ? 'comfortable' : 'compact') },
     { label: t('Details panel'), icon: 'panel', run: () => toggleDetails(), kbd: 'I' },
     !C.frontend && { label: fullscreen.value ? t('Exit full screen') : t('Full screen'), icon: fullscreen.value ? 'compress' : 'expand', run: () => { fullscreen.value = !fullscreen.value; } },
+    '-',
+    { header: t('Theme') },
+    { label: t('Light'), icon: 'sun', checked: p.theme === 'light', run: () => setPref('theme', 'light') },
+    { label: t('Dark'), icon: 'moon', checked: p.theme === 'dark', run: () => setPref('theme', 'dark') },
+    { label: t('Same as my computer'), icon: 'monitor', checked: !p.theme || p.theme === 'auto', run: () => setPref('theme', 'auto') },
   ], e.currentTarget);
 }
 
@@ -215,7 +220,7 @@ export function FilesView() {
             <button type="button" role="radio" aria-checked={String(prefs.value.view !== 'grid')} class={prefs.value.view !== 'grid' ? 'is-active' : ''} title={t('List')} onClick={() => setPref('view', 'list')}><Icon name="list" size={16} /></button>
             <button type="button" role="radio" aria-checked={String(prefs.value.view === 'grid')} class={prefs.value.view === 'grid' ? 'is-active' : ''} title={t('Grid')} onClick={() => setPref('view', 'grid')}><Icon name="grid" size={16} /></button>
           </div>
-          <IconButton icon="sort" label={t('View options')} onClick={ViewMenu} />
+          <IconButton icon="sliders" label={t('Display: sort, theme, density…')} onClick={ViewMenu} />
           <IconButton icon="panel" label={t('Details panel')} active={!!showDetails.value} class="flr-hide-sm" onClick={() => toggleDetails()} />
           {can('mkdir') || can('mkfile') || can('upload') ? (
             <Button variant="primary" icon="plus" iconRight="chevron-down" onClick={NewMenu}><span class="flr-hide-sm">{t('New')}</span></Button>

@@ -186,7 +186,21 @@ final class Profile {
 			'quota'        => $this->quota,
 			'rootName'     => $this->root_name(),
 			'rootAbsolute' => $this->is_admin ? $this->root : '',
+			'vault'        => $this->vault_rel(),
 		);
+	}
+
+	/**
+	 * Path of the Vault relative to this profile's root ("" when it is out of reach).
+	 *
+	 * @return string
+	 */
+	private function vault_rel() {
+		$vault = Paths::real( Storage::vault() );
+		if ( ! $vault || $vault === $this->root || ! Paths::is_within( $vault, $this->root ) ) {
+			return '';
+		}
+		return '/' . Paths::relative( $vault, $this->root );
 	}
 
 	/**

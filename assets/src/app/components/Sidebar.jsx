@@ -85,21 +85,40 @@ function NavItem({ view, icon, label, badge }) {
   );
 }
 
-function Favorite({ path }) {
+/** Shortcut to a folder (favorites, recent folders, Vault); also a drop target. */
+function Shortcut({ path, icon, label, title, menu, iconClass = '' }) {
   const [over, setOver] = useState(false);
   return (
     <a
       href={hrefFor('files', path)}
-      class={'flr-tree-item' + (cwd.value === path && route.value.view === 'files' ? ' is-active' : '') + (over ? ' is-drop' : '')}
+      class={'flr-tree-item flr-shortcut' + (cwd.value === path && route.value.view === 'files' ? ' is-active' : '') + (over ? ' is-drop' : '')}
       onClick={() => { drawerOpen.value = false; }}
-      onContextMenu={(e) => openMenu(e, [{ label: t('Remove from favorites'), icon: 'star', run: () => toggleFavorite(path) }])}
-      title={path}
+      onContextMenu={menu ? (e) => openMenu(e, menu) : undefined}
+      title={title || path}
       {...dropHandlers(path, setOver)}
     >
-      <span class="flr-tree-toggle is-leaf" />
-      <Icon name="star" size={16} class="flr-tree-icon is-star" filled />
-      <span class="flr-tree-label">{path === '/' ? profile.rootName : baseName(path)}</span>
+      <Icon name={icon} size={16} class={'flr-tree-icon ' + iconClass} filled={icon === 'star'} />
+      <span class="flr-tree-label">{label || (path === '/' ? profile.rootName : baseName(path))}</span>
     </a>
+  );
+}
+
+const THEMES = () => [
+  { value: 'light', icon: 'sun', label: t('Light') },
+  { value: 'dark', icon: 'moon', label: t('Dark') },
+  { value: 'auto', icon: 'monitor', label: t('System') },
+];
+
+function ThemeSwitch() {
+  const theme = prefs.value.theme || 'auto';
+  return (
+    <div class="flr-theme-switch" role="radiogroup" aria-label={t('Theme')}>
+      {THEMES().map((o) => (
+        <button type="button" role="radio" key={o.value} aria-checked={String(theme === o.value)} class={theme === o.value ? 'is-active' : ''} title={t('Theme: %s', o.label)} onClick={() => setPref('theme', o.value)}>
+          <Icon name={o.icon} size={15} />
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -108,10 +127,8 @@ export function Sidebar() {
     if (!tree.value['/']) loadTree('/');
   }, []);
   const favorites = prefs.value.favorites || [];
+  const recent = (prefs.value.recent || []).filter((p) => p !== '/' && !favorites.includes(p)).slice(0, 5);
   const rootChildren = tree.value['/'] || [];
-  const theme = prefs.value.theme || 'auto';
-  const nextTheme = { auto: 'light', light: 'dark', dark: 'auto' }[theme];
-  const themeIcon = { auto: 'monitor', light: 'sun', dark: 'moon' }[theme];
   return (
     <aside class={'flr-sidebar' + (drawerOpen.value ? ' is-open' : '')}>
       <div class="flr-brand">
@@ -132,10 +149,18 @@ export function Sidebar() {
       </nav>
 
       <div class="flr-side-scroll">
-        {favorites.length ? (
+        <div class="flr-side-group">
+          <h4>{t('Quick access')}</h4>
+          {profile.vault ? (
+            <Shortcut path={profile.vault} icon="lock" iconClass="is-vault" label={t('Vault (private)')} title={t('Private folder: its files can only be reached through your share links, never by a direct web address.')} />
+          ) : null}
+          {favorites.map((p) => <Shortcut path={p} key={p} icon="star" iconClass="is-star" menu={[{ label: t('Remove from favorites'), icon: 'star', run: () => toggleFavorite(p) }]} />)}
+          {!favorites.length ? <p class="flr-side-hint">{t('Right-click a folder, then “Add to favorites” to pin it here.')}</p> : null}
+        </div>
+        {recent.length ? (
           <div class="flr-side-group">
-            <h4>{t('Favorites')}</h4>
-            {favorites.map((p) => <Favorite path={p} key={p} />)}
+            <h4>{t('Recent')}</h4>
+            {recent.map((p) => <Shortcut path={p} key={p} icon="clock" />)}
           </div>
         ) : null}
         <div class="flr-side-group">
@@ -156,7 +181,7 @@ export function Sidebar() {
         <div class="flr-user">
           <Avatar />
           <span class="flr-user-name">{C.user ? C.user.name : ''}</span>
-          <IconButton icon={themeIcon} label={t('Theme: %s', { auto: t('System'), light: t('Light'), dark: t('Dark') }[theme])} onClick={() => setPref('theme', nextTheme)} size="sm" />
+          <ThemeSwitch />
         </div>
       </div>
     </aside>

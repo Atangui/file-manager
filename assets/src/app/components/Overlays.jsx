@@ -165,7 +165,8 @@ export function ContextMenu() {
         ) : (
           <button
             type="button"
-            role="menuitem"
+            role={it.checked !== undefined ? 'menuitemradio' : 'menuitem'}
+            aria-checked={it.checked !== undefined ? String(!!it.checked) : undefined}
             key={i}
             class={'flr-menu-item' + (it.danger ? ' is-danger' : '') + (active === i ? ' is-active' : '')}
             disabled={it.disabled}
@@ -174,7 +175,7 @@ export function ContextMenu() {
           >
             <Icon name={it.icon || 'more-h'} size={17} class={it.icon ? '' : 'is-blank'} />
             <span class="flr-menu-label">{it.label}</span>
-            {it.kbd ? <span class="flr-menu-kbd">{keyLabel(it.kbd)}</span> : null}
+            {it.checked ? <Icon name="check" size={15} class="flr-menu-check" /> : it.kbd ? <span class="flr-menu-kbd">{keyLabel(it.kbd)}</span> : null}
           </button>
         )
       )}

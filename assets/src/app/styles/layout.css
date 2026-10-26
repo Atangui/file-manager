@@ -272,3 +272,14 @@ button.flr-th:hover, .flr-th.is-sorted { color: var(--flr-text); }
 .flr-kbds { display: inline-flex; flex: none; }
 .flr-mini-badge.is-sensitive { color: var(--flr-warning); background: color-mix(in srgb, var(--flr-warning) 12%, transparent); }
 .flr-lasso { position: absolute; z-index: 6; pointer-events: none; border: 1px solid var(--flr-accent); background: color-mix(in srgb, var(--flr-accent) 12%, transparent); border-radius: 4px; }
+
+/* Sidebar shortcuts & theme switch */
+.flr-shortcut { padding-inline-start: 10px; gap: 8px; }
+.flr-tree-icon.is-vault { color: var(--flr-success); }
+.flr-side-hint { margin: 2px 10px 4px !important; font-size: 12px; line-height: 1.45; color: var(--flr-muted); font-weight: 400 !important; }
+.flr-side-group + .flr-side-group { margin-top: 14px; }
+.flr-theme-switch { display: inline-flex; flex: none; padding: 2px; border-radius: 9px; background: var(--flr-surface-2); border: 1px solid var(--flr-border); }
+.flr-theme-switch button { display: grid; place-items: center; width: 28px; height: 24px; border: 0; border-radius: 7px; background: transparent; color: var(--flr-muted); cursor: pointer; }
+.flr-theme-switch button:hover { color: var(--flr-text); }
+.flr-theme-switch button.is-active { background: var(--flr-surface); color: var(--flr-accent-text, var(--flr-accent)); box-shadow: var(--flr-shadow-sm); }
+.flr-menu-check { margin-inline-start: auto; color: var(--flr-accent); }
