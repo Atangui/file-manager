@@ -1,10 +1,10 @@
 === Filora — File Manager & Secure Sharing ===
-Contributors: filora
+Contributors: Charles A.
 Tags: file manager, share files, client portal, secure download, code editor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ Nginx ignores .htaccess files. Add the rule shown in Files → Security tools to
 Only the optional core integrity check contacts api.wordpress.org. There are no external fonts, CDNs or trackers.
 
 == Changelog ==
+
+= 1.0.3 =
+* Author information updated.
 
 = 1.0.2 =
 * Role templates (View & download, Document drop, Document manager, Personal space); contributors get "Document drop" on new installs.

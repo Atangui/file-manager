@@ -63,12 +63,11 @@ for (const file of files.sort()) {
 
 const esc = (s) => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
 const date = new Date().toISOString().replace('T', ' ').slice(0, 16) + '+0000';
-let out = `# Copyright (C) ${new Date().getFullYear()} Filora contributors
+let out = `# Copyright (C) ${new Date().getFullYear()} Charles A.
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Filora 1.0.2\\n"
-"Report-Msgid-Bugs-To: https://github.com/atangui/file-manager/issues\\n"
+"Project-Id-Version: Filora 1.0.3\\n"
 "POT-Creation-Date: ${date}\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=UTF-8\\n"

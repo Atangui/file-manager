@@ -1,5 +1,7 @@
 # Filora — Gestionnaire de fichiers & partage sécurisé pour WordPress
 
+*Par Charles A.*
+
 Filora est un gestionnaire de fichiers moderne, rapide et sécurisé pour WordPress, avec des **liens de partage façon Google Drive** pour vos clients et partenaires.
 
 Il reprend toutes les fonctionnalités de Filester (navigation dans l’arborescence WordPress, upload, édition de code, archives, restrictions par rôle, corbeille…) mais il a été **réécrit de zéro** : pas de jQuery, pas d’elFinder, **aucune commande shell** (Filester a eu plusieurs CVE à cause d’elFinder et des commandes système).
@@ -246,4 +248,4 @@ assets/dist                Fichiers compilés (versionnés)
 languages/                 Traductions (fr_FR fournie)
 ```
 
-Licence : GPL-2.0-or-later.
+Auteur : Charles A. — Licence : GPL-2.0-or-later.

@@ -1,8 +1,9 @@
 {
   "name": "filora",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Filora — modern file manager & secure sharing for WordPress",
+  "author": "Charles A.",
   "license": "GPL-2.0-or-later",
   "type": "module",
   "scripts": {
