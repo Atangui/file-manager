@@ -1,10 +1,9 @@
 # French translation for Filora — File Manager & Secure Sharing.
-# Copyright (C) 2026 Filora contributors
+# Copyright (C) 2026 Charles A.
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Filora 1.0.2\n"
-"Report-Msgid-Bugs-To: https://github.com/atangui/file-manager/issues\n"
+"Project-Id-Version: Filora 1.0.3\n"
 "POT-Creation-Date: 2026-10-26 12:00+0000\n"
 "PO-Revision-Date: 2026-10-26 13:00+0000\n"
 "Language-Team: French\n"
@@ -15,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: filora\n"
 
-#: filora.php:31
+#: filora.php:30
 msgid "Filora requires PHP 7.4 or newer. Please ask your host to upgrade PHP."
 msgstr "Filora nécessite PHP 7.4 ou une version plus récente. Demandez à votre hébergeur de mettre à jour PHP."
 
