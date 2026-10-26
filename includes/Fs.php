@@ -882,6 +882,8 @@ final class Fs {
 						continue;
 					}
 					if ( 'overwrite' === $conflict ) {
+						// Overwriting destroys the existing item: it needs the delete permission.
+						$this->p->require_op( 'delete' );
 						$this->assert_removable( $target );
 						$this->remove( $target, (bool) Settings::value( 'general', 'trash', true ) );
 					} else {

@@ -144,10 +144,27 @@ define( 'FILORA_PRIVATE_DIR', '/home/monsite/filora-private' );
 
 ## Rôles, dossiers privés et portail client
 
-**Réglages → Accès et rôles** permet de donner à n’importe quel rôle son propre espace :
+**Réglages → Accès et rôles** permet de donner à n’importe quel rôle son propre espace, en un clic grâce à des **modèles** :
+
+| Modèle | Pour qui | Ce que le rôle peut faire |
+|---|---|---|
+| **Consultation et téléchargement** | Personnes qui consultent | Voir les dossiers propres au site (jamais WordPress) et télécharger |
+| **Dépôt de documents** *(appliqué aux Contributeurs sur une nouvelle installation)* | Équipe qui met en ligne des documents | + déposer des PDF, documents Office et images (20 Mo max) et **remplacer un fichier par une nouvelle version en gardant son adresse web** ; ni suppression, ni renommage, ni déplacement |
+| **Gestion des documents** | Équipe de confiance | + créer des dossiers, renommer, déplacer, supprimer (vers la corbeille), créer des liens de partage |
+| **Espace personnel (portail client)** | Clients, partenaires | Un dossier privé par utilisateur dans le Coffre-fort, quota de 1 Go |
+
+Les modèles qui partent de la racine du site masquent **WordPress par des motifs** et non par une liste figée : `wp-admin`, `wp-includes`, `wp-content`, tout fichier `.php`, les fichiers cachés (`.htaccess`, `.env`, `.git`…), les journaux, les archives et sauvegardes (`*.zip`, `*.wpress`, `backup*`…). Un fichier ajouté plus tard (nouvelle sauvegarde, `wp-cli.phar`…) reste donc invisible.
+
+Angles morts pris en compte :
+- **Mise à jour d’un document** : « Remplacer par une nouvelle version… » (clic droit) garde le nom et donc l’adresse web, la version précédente est conservée (versions, ou corbeille pour les gros fichiers). Sans ce droit, un dépôt n’écrase **jamais** un fichier existant : il est renommé.
+- **Rôle attribué aux inscrits** (souvent « Abonné ») : un avertissement s’affiche, en rouge si l’inscription est ouverte à tous.
+- Une **mise à jour du plugin ne donne jamais de nouvel accès** : le modèle par défaut ne s’applique qu’à une nouvelle installation.
+- **Exporter / Importer** (en haut des Réglages) pour reprendre la même configuration sur un autre site. Les chemins utilisent des variables (`{ABSPATH}`…), donc rien n’est propre à un serveur ; la liste des administrateurs du site cible est conservée, les rôles absents et les dossiers inexistants sont ignorés avec un avertissement.
+
+Chaque rôle reste réglable finement :
 
 - **Dossier racine** avec variables : `{ABSPATH}`, `{WP_CONTENT}`, `{UPLOADS}`, `{VAULT}`, `{user_login}`, `{user_id}`, `{role}`. Exemple : `{VAULT}/clients/{user_login}` donne à chaque utilisateur un dossier **privé** créé automatiquement, inaccessible par URL directe.
-- **Actions autorisées** (télécharger, téléverser, créer, renommer, déplacer, supprimer, éditer, ZIP, permissions, images, partager).
+- **Actions autorisées** (télécharger, téléverser, remplacer, créer, renommer, déplacer, supprimer, éditer, ZIP, permissions, images, partager).
 - Éléments **cachés** et éléments en **lecture seule** (motifs : `*.log`, `private/`, `wp-content/plugins`…).
 - **Types de fichiers** autorisés à l’upload, **taille maximale**, **quota** de stockage.
 

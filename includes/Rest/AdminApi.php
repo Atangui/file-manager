@@ -33,6 +33,8 @@ final class AdminApi extends Base {
 		$this->route( '/activity/export', 'GET', array( $this, 'export' ) );
 		$this->route( '/settings', 'GET', array( $this, 'get_settings' ), 'settings' );
 		$this->route( '/settings', 'POST', array( $this, 'save_settings' ), 'settings' );
+		$this->route( '/settings/export', 'GET', array( $this, 'export_settings' ), 'settings' );
+		$this->route( '/settings/import', 'POST', array( $this, 'import_settings' ), 'settings' );
 		$this->route( '/tools/server', 'GET', array( $this, 'server' ) );
 		$this->route( '/tools/selftest', 'POST', array( $this, 'selftest' ) );
 		$this->route( '/tools/integrity', 'GET', array( $this, 'integrity' ) );
@@ -160,14 +162,16 @@ final class AdminApi extends Base {
 	 * @return array
 	 */
 	public function get_settings() {
-		$roles = array();
+		$counts = count_users();
+		$roles  = array();
 		foreach ( wp_roles()->get_names() as $key => $name ) {
 			if ( 'administrator' === $key && ! is_multisite() ) {
 				continue;
 			}
 			$roles[] = array(
-				'key'  => $key,
-				'name' => translate_user_role( $name ),
+				'key'   => $key,
+				'name'  => translate_user_role( $name ),
+				'users' => isset( $counts['avail_roles'][ $key ] ) ? (int) $counts['avail_roles'][ $key ] : 0,
 			);
 		}
 		$admins = array();
@@ -190,6 +194,11 @@ final class AdminApi extends Base {
 			'admins'       => $admins,
 			'ops'          => Settings::OPS,
 			'roleDefaults' => Settings::role_defaults(),
+			'presets'      => Settings::role_presets(),
+			'registration' => array(
+				'open'        => (bool) get_option( 'users_can_register' ),
+				'defaultRole' => (string) get_option( 'default_role', 'subscriber' ),
+			),
 			'sensitive'    => Settings::default_sensitive_patterns(),
 			'paths'        => array(
 				'abspath' => Paths::abspath(),
@@ -226,6 +235,66 @@ final class AdminApi extends Base {
 		Access::flush();
 		Log::add( 'settings.update', '', array( 'sections' => array_keys( $input ) ) );
 		return $this->get_settings();
+	}
+
+	/**
+	 * GET /settings/export — portable settings (placeholders, no user IDs) to reuse on another site.
+	 *
+	 * @return array
+	 */
+	public function export_settings() {
+		$settings = Settings::get();
+		unset( $settings['general']['admin_users'] ); // User IDs differ from one site to another.
+		Log::add( 'settings.export', '' );
+		return array(
+			'filora'   => FILORA_VERSION,
+			'exported' => gmdate( 'c' ),
+			'site'     => home_url( '/' ),
+			'settings' => $settings,
+		);
+	}
+
+	/**
+	 * POST /settings/import — apply an export. Keeps this site's administrator list,
+	 * ignores roles that do not exist here, and never applies a root folder that does
+	 * not exist on this server (that would lock everyone out).
+	 *
+	 * @param \WP_REST_Request $r Request.
+	 * @return array
+	 */
+	public function import_settings( \WP_REST_Request $r ) {
+		$this->sudo();
+		$data = $r->get_json_params();
+		if ( ! is_array( $data ) || ! isset( $data['filora'], $data['settings'] ) || ! is_array( $data['settings'] ) ) {
+			throw new Error( 'invalid_import', __( 'This file is not a Filora settings export.', 'filora' ) );
+		}
+		$input    = $data['settings'];
+		$current  = Settings::get();
+		$warnings = array();
+		$user     = wp_get_current_user();
+
+		$input['general']                = isset( $input['general'] ) && is_array( $input['general'] ) ? $input['general'] : array();
+		$input['general']['admin_users'] = $current['general']['admin_users'];
+		$root                            = isset( $input['general']['root'] ) ? (string) $input['general']['root'] : $current['general']['root'];
+		if ( null === Access::resolve_root( $root, $user, false ) ) {
+			$input['general']['root'] = $current['general']['root'];
+			/* translators: %s: folder */
+			$warnings[] = sprintf( __( 'The administrators’ root folder %s does not exist on this server: the current one was kept.', 'filora' ), $root );
+		}
+		$known = wp_roles()->get_names();
+		foreach ( isset( $input['roles'] ) && is_array( $input['roles'] ) ? $input['roles'] : array() as $role => $conf ) {
+			if ( ! isset( $known[ $role ] ) ) {
+				unset( $input['roles'][ $role ] );
+				/* translators: %s: role key */
+				$warnings[] = sprintf( __( 'The role “%s” does not exist on this site and was skipped.', 'filora' ), $role );
+			}
+		}
+		Settings::update( $input );
+		Access::flush();
+		Log::add( 'settings.import', '', array( 'from' => isset( $data['site'] ) ? esc_url_raw( (string) $data['site'] ) : '' ) );
+		$out             = $this->get_settings();
+		$out['warnings'] = $warnings;
+		return $out;
 	}
 
 	/**

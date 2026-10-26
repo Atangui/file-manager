@@ -32,6 +32,31 @@ function ConfirmDialog({ close, title, message, confirmLabel, danger, icon, extr
 /** Ask for confirmation. Resolves true/false. */
 export const confirm = (opts) => openDialog(ConfirmDialog, opts).then(Boolean);
 
+function ChoiceDialog({ close, title, message, icon, choices, list }) {
+  return (
+    <Dialog
+      title={title}
+      icon={icon || 'info'}
+      onClose={() => close(null)}
+      size="sm"
+      footer={
+        <>
+          <Button variant="ghost" onClick={() => close(null)}>{t('Cancel')}</Button>
+          {choices.map((c, i) => (
+            <Button key={c.value} variant={c.primary ? 'primary' : 'default'} onClick={() => close(c.value)} data-autofocus={c.primary ? true : undefined}>{c.label}</Button>
+          ))}
+        </>
+      }
+    >
+      {message ? <p class="flr-dialog-text">{message}</p> : null}
+      {list && list.length ? <ul class="flr-dialog-list">{list.slice(0, 8).map((x) => <li key={x}>{x}</li>)}{list.length > 8 ? <li>…</li> : null}</ul> : null}
+    </Dialog>
+  );
+}
+
+/** Ask to pick one of several choices. Resolves the choice value, or null. */
+export const choose = (opts) => openDialog(ChoiceDialog, opts);
+
 function PromptDialog({ close, title, label, value = '', placeholder, confirmLabel, selectBase, icon, help, validate }) {
   const [text, setText] = useState(value);
   const [error, setError] = useState('');

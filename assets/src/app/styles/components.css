@@ -192,3 +192,5 @@
 .flr-shortcut dt { color: var(--flr-text-2); font-size: 13px; }
 .flr-shortcut dd { margin: 0; display: inline-flex; gap: 4px; flex-shrink: 0; }
 .flr-shortcuts-tip { margin: 8px 0 0; font-size: 12.5px; }
+.flr-dialog-list { margin: 10px 0 0; padding: 8px 12px 8px 28px; border-radius: 10px; background: var(--flr-surface-2); font-size: 13px; color: var(--flr-text-2); max-height: 180px; overflow: auto; }
+.flr-dialog-list li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

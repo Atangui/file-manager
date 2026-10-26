@@ -36,6 +36,8 @@ export function url(route, query, withNonce = false) {
     u = new URL(base.replace(/\/?$/, '/') + route.replace(/^\//, ''), location.href);
   }
   appendQuery(u, query);
+  // Answer in the user's language (WordPress uses the site language for REST by default).
+  u.searchParams.set('_locale', 'user');
   if (withNonce) u.searchParams.set('_wpnonce', C.nonce);
   return u.toString();
 }
