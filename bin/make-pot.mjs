@@ -67,7 +67,7 @@ let out = `# Copyright (C) ${new Date().getFullYear()} Filora contributors
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Filora 1.0.0\\n"
+"Project-Id-Version: Filora 1.0.1\\n"
 "Report-Msgid-Bugs-To: https://github.com/atangui/file-manager/issues\\n"
 "POT-Creation-Date: ${date}\\n"
 "MIME-Version: 1.0\\n"

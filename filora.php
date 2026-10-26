@@ -3,7 +3,7 @@
  * Plugin Name:       Filora — File Manager & Secure Sharing
  * Plugin URI:        https://github.com/atangui/file-manager
  * Description:       A modern, fast and secure file manager for WordPress, with Drive-like private share links for clients and partners.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Filora contributors
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FILORA_VERSION', '1.0.0' );
+define( 'FILORA_VERSION', '1.0.1' );
 define( 'FILORA_DB_VERSION', 1 );
 define( 'FILORA_FILE', __FILE__ );
 define( 'FILORA_DIR', plugin_dir_path( __FILE__ ) );
