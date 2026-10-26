@@ -161,6 +161,23 @@ list( $s, $d ) = req( 'POST', '/shares/' . $share_id, array(), array( 'status' =
 ok( 200 === $s && 'disabled' === $d['status'], 'disable share' );
 list( $s, $d ) = req( 'POST', '/shares/' . $share_id . '/regenerate' );
 ok( 200 === $s && $d['url'] !== $share_url, 'regenerate token' );
+list( $s, $d ) = req( 'POST', '/shares', array(), array( 'path' => $vault . '/contract-v2.txt', 'password' => 'abc123' ) );
+ok( 400 === $s, 'share password shorter than 8 characters refused' );
+// Download-limited shares: no previews, and no thumbnails either (they can be the original).
+$img = Filora\Paths::real( Filora\Storage::vault() ) . '/limited.png';
+$gd  = imagecreatetruecolor( 40, 40 );
+imagepng( $gd, $img );
+list( $s, $d ) = req( 'POST', '/shares', array(), array( 'path' => $vault . '/limited.png', 'max_downloads' => 1 ) );
+$probe = wp_remote_get( add_query_arg( 'a', 'thumb', $d['url'] ), array( 'timeout' => 5 ) );
+if ( is_wp_error( $probe ) ) {
+	echo "  - (skipped: web server not reachable for the thumbnail check)\n";
+} else {
+	ok( 403 === wp_remote_retrieve_response_code( $probe ), 'thumbnail refused on a download-limited share' );
+	$probe = wp_remote_get( add_query_arg( 'a', 'raw', $d['url'] ), array( 'timeout' => 5 ) );
+	ok( 403 === wp_remote_retrieve_response_code( $probe ), 'preview refused on a download-limited share' );
+}
+req( 'DELETE', '/shares/' . $d['id'] );
+@unlink( $img );
 
 section( 'Non-admin role' );
 $editor = get_user_by( 'login', 'editor1' );
@@ -192,6 +209,22 @@ list( $s, $d ) = req( 'POST', '/fs/mkfile', array( 'path' => '/', 'name' => 'not
 ok( 200 === $s, 'editor creates notes.txt' );
 list( $s, $d ) = req( 'POST', '/fs/rename', array( 'path' => '/notes.txt', 'name' => 'notes.phtml' ) );
 ok( 403 === $s, 'editor cannot rename to .phtml' );
+list( $s, $d ) = req( 'POST', '/fs/rename', array( 'path' => '/notes.txt', 'name' => 'notes.html.' ) );
+ok( $s >= 400 && file_exists( wp_upload_dir()['basedir'] . '/clients/editor1/notes.txt' ), 'editor cannot rename to "notes.html." (trailing dot)' );
+list( $s, $d ) = req( 'POST', '/fs/rename', array( 'path' => '/notes.txt', 'name' => 'notes.html.bak' ) );
+ok( 403 === $s, 'editor cannot rename to .html.bak (served as HTML by Apache)' );
+list( $s, $d ) = req( 'POST', '/fs/mkfile', array( 'path' => '/', 'name' => 'logo.svg.txt' ) );
+ok( 403 === $s, 'editor cannot create .svg.txt' );
+// Case-only rename must not overwrite another file (case-sensitive file systems).
+$home = wp_upload_dir()['basedir'] . '/clients/editor1';
+file_put_contents( $home . '/case.txt', 'lower' );
+file_put_contents( $home . '/CASE.txt', 'upper' );
+if ( 'upper' === file_get_contents( $home . '/CASE.txt' ) && 'lower' === file_get_contents( $home . '/case.txt' ) ) {
+	list( $s, $d ) = req( 'POST', '/fs/rename', array( 'path' => '/case.txt', 'name' => 'CASE.txt' ) );
+	ok( 409 === $s && 'upper' === file_get_contents( $home . '/CASE.txt' ), 'case-only rename does not overwrite another file' );
+	@unlink( $home . '/CASE.txt' );
+}
+@unlink( $home . '/case.txt' );
 list( $s, $d ) = req( 'GET', '/fs/list', array( 'path' => '/../../' ) );
 ok( $s >= 400, 'editor cannot escape root' );
 // Evil zip with php inside.
@@ -205,6 +238,15 @@ $zip->close();
 list( $s, $d ) = req( 'POST', '/fs/extract', array( 'path' => '/pack.zip' ) );
 ok( 200 === $s && 1 === $d['files'] && 2 === count( $d['skipped'] ), 'extract skips php and .htaccess for editor' );
 ok( ! file_exists( wp_upload_dir()['basedir'] . '/clients/editor1/a.php' ), 'a.php not extracted' );
+// Extraction follows the role's upload allow-list and content checks.
+$zip->open( $ezip, ZipArchive::CREATE | ZipArchive::OVERWRITE );
+$zip->addFromString( 'report.docx', 'not allowed for this role' );
+$zip->addFromString( 'page.html.bak', '<script>alert(1)</script>' );
+$zip->addFromString( 'photo.jpg', '<?php system($_GET[1]);' );
+$zip->addFromString( 'readme.txt', 'fine' );
+$zip->close();
+list( $s, $d ) = req( 'POST', '/fs/extract', array( 'path' => '/pack.zip', 'dest' => '/', 'folder' => true ) );
+ok( 200 === $s && 1 === $d['files'] && 3 === count( $d['skipped'] ), 'extract enforces allow-list, multi-extensions and content checks' );
 list( $s, $d ) = req( 'GET', '/fs/read', array( 'path' => '/../../../wp-config.php' ) );
 ok( $s >= 400, 'editor cannot read wp-config via traversal' );
 list( $s, $d ) = req( 'GET', '/settings' );

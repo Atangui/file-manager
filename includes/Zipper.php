@@ -106,7 +106,7 @@ final class Zipper {
 	 * @return array{files:int,skipped:array}
 	 * @throws Error On failure.
 	 */
-	public static function extract( $archive, $dest, $check, $max_size ) {
+	public static function extract( $archive, $dest, $check, $max_size, $after = null ) {
 		if ( ! self::available() ) {
 			throw new Error( 'no_zip', __( 'The ZipArchive PHP extension is not available on this server.', 'filora' ), 501 );
 		}
@@ -200,6 +200,15 @@ final class Zipper {
 			fclose( $in ); // phpcs:ignore
 			fclose( $out ); // phpcs:ignore
 			@chmod( $target, 0644 ); // phpcs:ignore
+			if ( $after ) {
+				try {
+					call_user_func( $after, $target, basename( $clean ) );
+				} catch ( Error $e ) {
+					@unlink( $target ); // phpcs:ignore
+					$skipped[] = $raw;
+					continue;
+				}
+			}
 			++$files;
 		}
 		$zip->close();

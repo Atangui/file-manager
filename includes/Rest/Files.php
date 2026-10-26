@@ -504,12 +504,20 @@ final class Files extends Base {
 			$archive,
 			$dir,
 			static function ( $part, $is_dir, $relative ) use ( $fs, $p, $dir ) {
-				Policy::assert_writable_name( $p, $part, $is_dir );
+				// Extracted files obey the same rules as uploads (role allow-list).
+				if ( $is_dir ) {
+					Policy::assert_writable_name( $p, $part, true );
+				} else {
+					Policy::assert_uploadable( $p, $part );
+				}
 				if ( 'ok' !== $fs->visibility( $dir . '/' . $relative ) ) {
 					throw Error::forbidden();
 				}
 			},
-			$max
+			$max,
+			$p->is_admin ? null : static function ( $file, $name ) {
+				Uploads::assert_content_matches( $file, $name );
+			}
 		);
 		Log::add( 'extract', $archive, array( 'files' => $result['files'], 'skipped' => count( $result['skipped'] ) ) );
 		$fs->touch_usage();

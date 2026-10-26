@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filora 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/atangui/file-manager/issues\n"
-"POT-Creation-Date: 2026-10-26 11:16+0000\n"
+"POT-Creation-Date: 2026-10-26 11:19+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -104,7 +104,7 @@ msgstr ""
 msgid "This is not a folder."
 msgstr ""
 
-#: includes/Fs.php:154 includes/Fs.php:175 includes/Fs.php:1017
+#: includes/Fs.php:154 includes/Fs.php:175 includes/Fs.php:1019
 msgid "This item is locked."
 msgstr ""
 
@@ -170,11 +170,11 @@ msgstr ""
 msgid "The file could not be written (check file permissions)."
 msgstr ""
 
-#: includes/Fs.php:763 includes/Fs.php:790 includes/Fs.php:825 includes/Uploads.php:221
+#: includes/Fs.php:763 includes/Fs.php:790 includes/Fs.php:827 includes/Uploads.php:221
 msgid "An item with this name already exists."
 msgstr ""
 
-#: includes/Fs.php:766 includes/Fs.php:793 includes/Fs.php:828 includes/Fs.php:890
+#: includes/Fs.php:766 includes/Fs.php:793 includes/Fs.php:830 includes/Fs.php:892
 msgid "This name is reserved."
 msgstr ""
 
@@ -186,43 +186,43 @@ msgstr ""
 msgid "The file could not be created."
 msgstr ""
 
-#: includes/Fs.php:831
+#: includes/Fs.php:833
 msgid "The item could not be renamed."
 msgstr ""
 
-#: includes/Fs.php:863
+#: includes/Fs.php:865
 msgid "The server does not allow reading this item."
 msgstr ""
 
-#: includes/Fs.php:866
+#: includes/Fs.php:868
 msgid "A folder cannot be copied or moved into itself."
 msgstr ""
 
-#: includes/Fs.php:876
+#: includes/Fs.php:878
 msgid "copy"
 msgstr ""
 
-#: includes/Fs.php:988
+#: includes/Fs.php:990
 msgid "The item could not be deleted completely (check file permissions)."
 msgstr ""
 
-#: includes/Fs.php:1020
+#: includes/Fs.php:1022
 msgid "Permissions could not be changed (the file probably belongs to another system user)."
 msgstr ""
 
-#: includes/Fs.php:1054
+#: includes/Fs.php:1056
 msgid "Invalid permissions. Use an octal value such as 644 or 755."
 msgstr ""
 
-#: includes/Fs.php:1075 includes/Rest/Files.php:501
+#: includes/Fs.php:1077 includes/Rest/Files.php:501
 msgid "Your storage quota is full."
 msgstr ""
 
-#: includes/Fs.php:1114 includes/Fs.php:1135
+#: includes/Fs.php:1116 includes/Fs.php:1137
 msgid "The item could not be copied."
 msgstr ""
 
-#: includes/Fs.php:1151
+#: includes/Fs.php:1153
 msgid "The item could not be moved."
 msgstr ""
 
@@ -326,25 +326,29 @@ msgstr ""
 msgid "Names cannot contain slashes or control characters."
 msgstr ""
 
-#: includes/Policy.php:54
+#: includes/Policy.php:56
+msgid "Names cannot end with a dot or a space."
+msgstr ""
+
+#: includes/Policy.php:59
 msgid "This name is not allowed on this server."
 msgstr ""
 
-#: includes/Policy.php:119
+#: includes/Policy.php:135
 msgid "PHP file editing is disabled on this site (DISALLOW_FILE_EDIT)."
 msgstr ""
 
-#: includes/Policy.php:124 includes/Policy.php:127
+#: includes/Policy.php:140 includes/Policy.php:145
 msgid "For security reasons, this file type cannot be created here."
 msgstr ""
 
 #. translators: %s: comma separated list of extensions
-#: includes/Policy.php:149 includes/Policy.php:167
+#: includes/Policy.php:167 includes/Policy.php:185
 #, php-format
 msgid "This file type is not allowed. Allowed types: %s"
 msgstr ""
 
-#: includes/Policy.php:163 includes/i18n-strings.php:582
+#: includes/Policy.php:181 includes/i18n-strings.php:582
 msgid "This file type is not allowed."
 msgstr ""
 
@@ -382,7 +386,7 @@ msgstr ""
 
 #. translators: %s: size
 #. translators: %s: max size
-#: includes/Rest/Files.php:282 includes/ShareRouter.php:923
+#: includes/Rest/Files.php:282 includes/ShareRouter.php:925
 #, php-format
 msgid "This file is too large (max %s)."
 msgstr ""
@@ -399,7 +403,7 @@ msgstr ""
 msgid "Only .zip archives can be extracted."
 msgstr ""
 
-#: includes/Rest/Files.php:623
+#: includes/Rest/Files.php:631
 msgid "The Vault is outside of your root folder."
 msgstr ""
 
@@ -423,15 +427,15 @@ msgstr ""
 msgid "Too many attempts. Please request a new code."
 msgstr ""
 
-#: includes/ShareRouter.php:902
+#: includes/ShareRouter.php:904
 msgid "Uploads are not allowed here."
 msgstr ""
 
-#: includes/ShareRouter.php:912
+#: includes/ShareRouter.php:914
 msgid "Too many uploads. Please wait a moment."
 msgstr ""
 
-#: includes/ShareRouter.php:951 includes/Uploads.php:237
+#: includes/ShareRouter.php:953 includes/Uploads.php:237
 msgid "The file could not be saved."
 msgstr ""
 
@@ -472,7 +476,7 @@ msgid "The expiration date must be in the future."
 msgstr ""
 
 #: includes/Shares.php:201
-msgid "The password must contain at least 4 characters."
+msgid "The password must contain at least 8 characters."
 msgstr ""
 
 #: includes/Shares.php:208
@@ -539,7 +543,7 @@ msgstr ""
 msgid "The file content does not match its extension."
 msgstr ""
 
-#: includes/Zipper.php:40 includes/Zipper.php:111 includes/Zipper.php:220
+#: includes/Zipper.php:40 includes/Zipper.php:111 includes/Zipper.php:229
 msgid "The ZipArchive PHP extension is not available on this server."
 msgstr ""
 
@@ -555,7 +559,7 @@ msgstr ""
 msgid "Too many files to create an archive."
 msgstr ""
 
-#: includes/Zipper.php:115 includes/Zipper.php:224
+#: includes/Zipper.php:115 includes/Zipper.php:233
 msgid "This archive is invalid or corrupted."
 msgstr ""
 
@@ -1239,7 +1243,7 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: includes/i18n-strings.php:176 templates/share.php:146 templates/share.php:375 templates/share.php:569
+#: includes/i18n-strings.php:176 templates/share.php:146 templates/share.php:375 templates/share.php:570
 msgid "Download"
 msgstr ""
 
@@ -2260,7 +2264,7 @@ msgstr ""
 msgid "Previous / next file in preview"
 msgstr ""
 
-#: includes/i18n-strings.php:441 templates/share.php:591
+#: includes/i18n-strings.php:441 templates/share.php:592
 msgid "Private link — please do not forward it."
 msgstr ""
 
@@ -3515,7 +3519,7 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
-#: templates/share.php:162 templates/share.php:577
+#: templates/share.php:162 templates/share.php:578
 msgid "No matching files."
 msgstr ""
 
@@ -3564,7 +3568,7 @@ msgid "Photos"
 msgstr ""
 
 #. translators: %s: file
-#: templates/share.php:569
+#: templates/share.php:570
 #, php-format
 msgid "Download %s"
 msgstr ""

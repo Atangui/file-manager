@@ -68,7 +68,15 @@ Options par lien : **expiration**, **mot de passe** (générateur intégré), **
 
 Le lien est affiché avec un **QR code**, un bouton « Envoyer par e-mail » et un rappel d’envoyer le mot de passe **par un autre canal**. Chaque lien peut être désactivé, régénéré (l’ancienne URL meurt instantanément), ses visiteurs déconnectés, son compteur remis à zéro, et son activité consultée.
 
-La page publique est **autonome** (aucun code du thème n’est chargé), rapide, responsive, en mode clair/sombre automatique, avec la couleur et le logo de votre marque.
+La page publique est pensée pour des **destinataires non techniques** (clients, partenaires, commerciaux) : un espace de consultation, pas un explorateur de fichiers.
+
+- Titre, message de l’expéditeur avec son avatar, et des repères simples : « 4 dossiers · 3 fichiers », « Disponible jusqu’au 2 novembre ».
+- **Dossiers illustrés** par les photos qu’ils contiennent, avec un résumé (« 6 photos », « 2 fichiers »).
+- **Documents dessinés comme des pages** colorées selon leur type (PDF, tableur, présentation…), noms sans extension, types en langage courant, aucune date ni permission technique.
+- **Galerie** automatique quand un dossier contient surtout des photos ; recherche sans accents ; vue vignettes ou liste.
+- **Visionneuse plein écran** (photos, vidéos, PDF, textes) avec flèches, balayage tactile et un bouton « Télécharger » toujours visible ; quand l’aperçu est impossible, le message explique simplement quoi faire.
+- **Langue du visiteur** : la page s’affiche dans la langue de son navigateur si une traduction existe (un partenaire anglophone voit la page en anglais sur un site français) ; les notifications envoyées au propriétaire restent dans la langue du site.
+- **Autonome** (aucun code du thème n’est chargé), rapide, responsive, mode clair/sombre automatique, couleur et logo de votre marque.
 
 ## Les « angles morts » couverts
 
@@ -93,11 +101,14 @@ Ce que la plupart des gestionnaires de fichiers et outils de partage oublient :
 - **Usurpation d’IP** derrière un proxy : `X-Forwarded-For` n’est jamais cru par défaut (réglage explicite pour Cloudflare / load balancer).
 - **Dépôts de visiteurs** : liste blanche d’extensions, refus des types exécutables ou capables de lancer du JavaScript (PHP, HTML, SVG…), vérification que le contenu correspond à l’extension, jamais d’écrasement, quotas de taille.
 - **Mode « Demande de fichiers »** : chaque visiteur ne voit que ses propres envois.
+- **Limite de téléchargements contournée par les aperçus ou les miniatures** : quand une limite est fixée, aperçus et miniatures sont désactivés (une miniature peut être le fichier original).
+- **Mots de passe de partage** d’au moins 8 caractères, tentatives limitées par IP.
 
 **Gestion de fichiers**
 - **Liens symboliques** pointant hors du dossier racine : ignorés.
-- **Double extension** (`shell.php.jpg`, que Apache peut exécuter) et fichiers de configuration serveur (`.htaccess`, `.user.ini`, `php.ini`, `web.config`) refusés pour les non-admins sur **tous** les chemins d’écriture : upload, création, renommage, copie, extraction ZIP, sauvegarde.
+- **Double extension** (`shell.php.jpg` exécuté par Apache, `page.html.bak` servi comme HTML) et **point final** (`page.html.`) : chaque segment du nom est contrôlé. Fichiers de configuration serveur (`.htaccess`, `.user.ini`, `php.ini`, `web.config`) refusés pour les non-admins sur **tous** les chemins d’écriture : upload, création, renommage, copie, extraction ZIP, sauvegarde.
 - **Contourner l’upload en renommant** un `.txt` en `.php` (faille historique des gestionnaires de fichiers) : bloqué.
+- **Contourner la liste des types autorisés via un ZIP** : les fichiers extraits suivent les mêmes règles que les uploads (types autorisés du rôle, contenu vérifié).
 - **Copier un dossier** ne fait jamais apparaître les fichiers cachés/sensibles qu’il contient ailleurs.
 - **Supprimer** la racine WordPress, `wp-admin`, `wp-includes`, `wp-content`, le thème actif ou Filora lui-même : impossible depuis l’interface.
 - **Corbeille et versions** stockées dans un dossier privé au nom aléatoire, bloqué en HTTP (ou hors de la racine web avec `FILORA_PRIVATE_DIR`) : un `wp-config.php` supprimé ne devient jamais téléchargeable.
