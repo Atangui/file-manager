@@ -197,8 +197,8 @@ final class Shares {
 			if ( '' === $password ) {
 				$out['password_hash'] = null;
 			} else {
-				if ( strlen( $password ) < 4 ) {
-					throw new Error( 'weak_password', __( 'The password must contain at least 4 characters.', 'filora' ) );
+				if ( strlen( $password ) < 8 ) {
+					throw new Error( 'weak_password', __( 'The password must contain at least 8 characters.', 'filora' ) );
 				}
 				$out['password_hash'] = wp_hash_password( $password );
 			}

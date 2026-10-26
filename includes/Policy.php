@@ -50,7 +50,12 @@ final class Policy {
 		if ( preg_match( '#[/\\\\\x00-\x1F\x7F]#', $name ) ) {
 			throw new Error( 'invalid_name', __( 'Names cannot contain slashes or control characters.', 'filora' ) );
 		}
-		if ( Paths::is_windows() && ( preg_match( '/[<>:"|?*]/', $name ) || preg_match( '/^(con|prn|aux|nul|com\d|lpt\d)(\..*)?$/i', $name ) || preg_match( '/[. ]$/', $name ) ) ) {
+		// A trailing dot or space hides the real extension from extension checks
+		// ("page.html." is served as HTML by Apache) and breaks on Windows.
+		if ( preg_match( '/[. ]$/', $name ) ) {
+			throw new Error( 'invalid_name', __( 'Names cannot end with a dot or a space.', 'filora' ) );
+		}
+		if ( Paths::is_windows() && ( preg_match( '/[<>:"|?*]/', $name ) || preg_match( '/^(con|prn|aux|nul|com\d|lpt\d)(\..*)?$/i', $name ) ) ) {
 			throw new Error( 'invalid_name', __( 'This name is not allowed on this server.', 'filora' ) );
 		}
 	}
@@ -92,13 +97,24 @@ final class Policy {
 	}
 
 	/**
-	 * Is the final extension able to run script in a browser?
+	 * Script-capable types found in any dot segment ("a.html.bak" => [html]): Apache's
+	 * mod_mime uses every recognised extension, not only the last one.
+	 *
+	 * @param string $name Name.
+	 * @return string[]
+	 */
+	public static function browser_active_segments( $name ) {
+		return array_values( array_intersect( self::segments( $name ), self::BROWSER_ACTIVE ) );
+	}
+
+	/**
+	 * Could the name run script in a browser when opened from the site origin?
 	 *
 	 * @param string $name Name.
 	 * @return bool
 	 */
 	public static function is_browser_active( $name ) {
-		return in_array( Paths::ext( $name ), self::BROWSER_ACTIVE, true );
+		return (bool) self::browser_active_segments( $name );
 	}
 
 	/**
@@ -123,7 +139,9 @@ final class Policy {
 		if ( self::is_server_dangerous( $name ) ) {
 			throw new Error( 'forbidden_type', __( 'For security reasons, this file type cannot be created here.', 'filora' ), 403 );
 		}
-		if ( self::is_browser_active( $name ) && ! in_array( Paths::ext( $name ), $profile->upload_exts_list(), true ) ) {
+		// Script-capable types are only allowed when explicitly listed for the role.
+		$active = self::browser_active_segments( $name );
+		if ( $active && array_diff( $active, $profile->upload_exts_list() ) ) {
 			throw new Error( 'forbidden_type', __( 'For security reasons, this file type cannot be created here.', 'filora' ), 403 );
 		}
 	}

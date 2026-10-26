@@ -109,7 +109,7 @@ msgstr "Vous n’avez pas accès au gestionnaire de fichiers."
 msgid "This is not a folder."
 msgstr "Ce n’est pas un dossier."
 
-#: includes/Fs.php:154 includes/Fs.php:175 includes/Fs.php:1017
+#: includes/Fs.php:154 includes/Fs.php:175 includes/Fs.php:1019
 msgid "This item is locked."
 msgstr "Cet élément est verrouillé."
 
@@ -175,11 +175,11 @@ msgstr "Erreur de syntaxe PHP : %1$s à la ligne %2$d. Le fichier n’a pas ét
 msgid "The file could not be written (check file permissions)."
 msgstr "Le fichier n’a pas pu être écrit (vérifiez les permissions des fichiers)."
 
-#: includes/Fs.php:763 includes/Fs.php:790 includes/Fs.php:825 includes/Uploads.php:221
+#: includes/Fs.php:763 includes/Fs.php:790 includes/Fs.php:827 includes/Uploads.php:221
 msgid "An item with this name already exists."
 msgstr "Un élément portant ce nom existe déjà."
 
-#: includes/Fs.php:766 includes/Fs.php:793 includes/Fs.php:828 includes/Fs.php:890
+#: includes/Fs.php:766 includes/Fs.php:793 includes/Fs.php:830 includes/Fs.php:892
 msgid "This name is reserved."
 msgstr "Ce nom est réservé."
 
@@ -191,43 +191,43 @@ msgstr "Le dossier n’a pas pu être créé."
 msgid "The file could not be created."
 msgstr "Le fichier n’a pas pu être créé."
 
-#: includes/Fs.php:831
+#: includes/Fs.php:833
 msgid "The item could not be renamed."
 msgstr "L’élément n’a pas pu être renommé."
 
-#: includes/Fs.php:863
+#: includes/Fs.php:865
 msgid "The server does not allow reading this item."
 msgstr "Le serveur n’autorise pas la lecture de cet élément."
 
-#: includes/Fs.php:866
+#: includes/Fs.php:868
 msgid "A folder cannot be copied or moved into itself."
 msgstr "Un dossier ne peut pas être copié ou déplacé dans lui-même."
 
-#: includes/Fs.php:876
+#: includes/Fs.php:878
 msgid "copy"
 msgstr "copie"
 
-#: includes/Fs.php:988
+#: includes/Fs.php:990
 msgid "The item could not be deleted completely (check file permissions)."
 msgstr "L’élément n’a pas pu être entièrement supprimé (vérifiez les permissions des fichiers)."
 
-#: includes/Fs.php:1020
+#: includes/Fs.php:1022
 msgid "Permissions could not be changed (the file probably belongs to another system user)."
 msgstr "Les permissions n’ont pas pu être modifiées (le fichier appartient probablement à un autre utilisateur système)."
 
-#: includes/Fs.php:1054
+#: includes/Fs.php:1056
 msgid "Invalid permissions. Use an octal value such as 644 or 755."
 msgstr "Permissions non valides. Utilisez une valeur octale comme 644 ou 755."
 
-#: includes/Fs.php:1075 includes/Rest/Files.php:501
+#: includes/Fs.php:1077 includes/Rest/Files.php:501
 msgid "Your storage quota is full."
 msgstr "Votre quota de stockage est atteint."
 
-#: includes/Fs.php:1114 includes/Fs.php:1135
+#: includes/Fs.php:1116 includes/Fs.php:1137
 msgid "The item could not be copied."
 msgstr "L’élément n’a pas pu être copié."
 
-#: includes/Fs.php:1151
+#: includes/Fs.php:1153
 msgid "The item could not be moved."
 msgstr "L’élément n’a pas pu être déplacé."
 
@@ -331,25 +331,29 @@ msgstr "Ce nom est trop long."
 msgid "Names cannot contain slashes or control characters."
 msgstr "Les noms ne peuvent contenir ni barres obliques ni caractères de contrôle."
 
-#: includes/Policy.php:54
+#: includes/Policy.php:56
+msgid "Names cannot end with a dot or a space."
+msgstr "Un nom ne peut pas se terminer par un point ou une espace."
+
+#: includes/Policy.php:59
 msgid "This name is not allowed on this server."
 msgstr "Ce nom n’est pas autorisé sur ce serveur."
 
-#: includes/Policy.php:119
+#: includes/Policy.php:135
 msgid "PHP file editing is disabled on this site (DISALLOW_FILE_EDIT)."
 msgstr "La modification des fichiers PHP est désactivée sur ce site (DISALLOW_FILE_EDIT)."
 
-#: includes/Policy.php:124 includes/Policy.php:127
+#: includes/Policy.php:140 includes/Policy.php:145
 msgid "For security reasons, this file type cannot be created here."
 msgstr "Pour des raisons de sécurité, ce type de fichier ne peut pas être créé ici."
 
 #. translators: %s: comma separated list of extensions
-#: includes/Policy.php:149 includes/Policy.php:167
+#: includes/Policy.php:167 includes/Policy.php:185
 #, php-format
 msgid "This file type is not allowed. Allowed types: %s"
 msgstr "Ce type de fichier n’est pas autorisé. Types autorisés : %s"
 
-#: includes/Policy.php:163 includes/i18n-strings.php:582
+#: includes/Policy.php:181 includes/i18n-strings.php:582
 msgid "This file type is not allowed."
 msgstr "Ce type de fichier n’est pas autorisé."
 
@@ -387,7 +391,7 @@ msgstr "Trop d’éléments sélectionnés."
 
 #. translators: %s: size
 #. translators: %s: max size
-#: includes/Rest/Files.php:282 includes/ShareRouter.php:923
+#: includes/Rest/Files.php:282 includes/ShareRouter.php:925
 #, php-format
 msgid "This file is too large (max %s)."
 msgstr "Ce fichier est trop volumineux (max. %s)."
@@ -404,7 +408,7 @@ msgstr "Aucune sélection."
 msgid "Only .zip archives can be extracted."
 msgstr "Seules les archives .zip peuvent être extraites."
 
-#: includes/Rest/Files.php:623
+#: includes/Rest/Files.php:631
 msgid "The Vault is outside of your root folder."
 msgstr "Le Coffre-fort se trouve en dehors de votre dossier racine."
 
@@ -428,15 +432,15 @@ msgstr "Ce code n’est pas valide ou a expiré. Demandez-en un nouveau."
 msgid "Too many attempts. Please request a new code."
 msgstr "Trop de tentatives. Veuillez demander un nouveau code."
 
-#: includes/ShareRouter.php:902
+#: includes/ShareRouter.php:904
 msgid "Uploads are not allowed here."
 msgstr "Le téléversement n’est pas autorisé ici."
 
-#: includes/ShareRouter.php:912
+#: includes/ShareRouter.php:914
 msgid "Too many uploads. Please wait a moment."
 msgstr "Trop de téléversements. Veuillez patienter un instant."
 
-#: includes/ShareRouter.php:951 includes/Uploads.php:237
+#: includes/ShareRouter.php:953 includes/Uploads.php:237
 msgid "The file could not be saved."
 msgstr "Le fichier n’a pas pu être enregistré."
 
@@ -477,8 +481,8 @@ msgid "The expiration date must be in the future."
 msgstr "La date d’expiration doit être dans le futur."
 
 #: includes/Shares.php:201
-msgid "The password must contain at least 4 characters."
-msgstr "Le mot de passe doit contenir au moins 4 caractères."
+msgid "The password must contain at least 8 characters."
+msgstr "Le mot de passe doit contenir au moins 8 caractères."
 
 #: includes/Shares.php:208
 msgid "A password is required for share links on this site."
@@ -544,7 +548,7 @@ msgstr "Le téléversement a échoué."
 msgid "The file content does not match its extension."
 msgstr "Le contenu du fichier ne correspond pas à son extension."
 
-#: includes/Zipper.php:40 includes/Zipper.php:111 includes/Zipper.php:220
+#: includes/Zipper.php:40 includes/Zipper.php:111 includes/Zipper.php:229
 msgid "The ZipArchive PHP extension is not available on this server."
 msgstr "L’extension PHP ZipArchive n’est pas disponible sur ce serveur."
 
@@ -560,7 +564,7 @@ msgstr "La sélection est trop volumineuse pour être compressée en ZIP. Télé
 msgid "Too many files to create an archive."
 msgstr "Trop de fichiers pour créer une archive."
 
-#: includes/Zipper.php:115 includes/Zipper.php:224
+#: includes/Zipper.php:115 includes/Zipper.php:233
 msgid "This archive is invalid or corrupted."
 msgstr "Cette archive n’est pas valide ou est corrompue."
 
@@ -1244,7 +1248,7 @@ msgstr "Document"
 msgid "Done"
 msgstr "Terminé"
 
-#: includes/i18n-strings.php:176 templates/share.php:146 templates/share.php:375 templates/share.php:569
+#: includes/i18n-strings.php:176 templates/share.php:146 templates/share.php:375 templates/share.php:570
 msgid "Download"
 msgstr "Télécharger"
 
@@ -2275,7 +2279,7 @@ msgstr "Précédent"
 msgid "Previous / next file in preview"
 msgstr "Fichier précédent / suivant dans l’aperçu"
 
-#: includes/i18n-strings.php:441 templates/share.php:591
+#: includes/i18n-strings.php:441 templates/share.php:592
 msgid "Private link — please do not forward it."
 msgstr "Lien privé — merci de ne pas le transférer."
 
@@ -3530,7 +3534,7 @@ msgstr "Veuillez d’abord saisir votre nom."
 msgid "Loading…"
 msgstr "Chargement…"
 
-#: templates/share.php:162 templates/share.php:577
+#: templates/share.php:162 templates/share.php:578
 msgid "No matching files."
 msgstr "Aucun fichier correspondant."
 
@@ -3579,7 +3583,7 @@ msgid "Photos"
 msgstr "Photos"
 
 #. translators: %s: file
-#: templates/share.php:569
+#: templates/share.php:570
 #, php-format
 msgid "Download %s"
 msgstr "Télécharger %s"

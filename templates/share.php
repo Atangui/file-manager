@@ -502,7 +502,7 @@ if ( 'page' === $view && $share ) {
 							<?php foreach ( $folders as $item ) : ?>
 								<?php
 								$sum    = isset( $item['summary'] ) ? $item['summary'] : null;
-								$thumbs = $sum ? $sum['thumbs'] : array();
+								$thumbs = $sum && $ctx['can_preview'] ? $sum['thumbs'] : array();
 								?>
 								<li class="fs-item fs-folder" data-name="<?php echo esc_attr( strtolower( $item['name'] ) ); ?>" data-rel="<?php echo esc_attr( $item['rel'] ); ?>" data-dir="1">
 									<a class="fs-card" href="<?php echo esc_url( $router->link( array( 'p' => $item['rel'] ) ) ); ?>">
@@ -546,12 +546,13 @@ if ( 'page' === $view && $share ) {
 								} else {
 									$href = '';
 								}
-								$tag = $href ? 'a' : 'div';
+								$tag   = $href ? 'a' : 'div';
+								$thumb = $item['thumb'] && $ctx['can_preview'];
 								?>
 								<li class="fs-item fs-file fs-cat--<?php echo esc_attr( $item['cat'] ); ?>" data-name="<?php echo esc_attr( strtolower( $item['name'] ) ); ?>" data-rel="<?php echo esc_attr( $item['rel'] ); ?>" data-dir="0">
 									<<?php echo $tag; // phpcs:ignore ?> class="fs-card"<?php echo $href ? ' href="' . esc_url( $href ) . '"' : ''; ?><?php echo $ctx['can_preview'] ? ' data-preview' : ''; ?>>
-										<span class="fs-visual<?php echo $item['thumb'] ? ' fs-visual--photo' : ''; ?>">
-											<?php if ( $item['thumb'] ) : ?>
+										<span class="fs-visual<?php echo $thumb ? ' fs-visual--photo' : ''; ?>">
+											<?php if ( $thumb ) : ?>
 												<img loading="lazy" decoding="async" alt="" src="<?php echo esc_url( $router->link( array( 'a' => 'thumb', 'p' => $item['rel'], 's' => $gallery ? 640 : 320 ) ) ); ?>">
 											<?php else : ?>
 												<?php echo $doc_art( $item['cat'], $item['ext'] ); // phpcs:ignore ?>

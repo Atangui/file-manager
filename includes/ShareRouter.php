@@ -815,7 +815,9 @@ final class ShareRouter {
 	 * Image thumbnail.
 	 */
 	private function handle_thumb() {
-		if ( ! $this->can_browse() ) {
+		// Thumbnails can be the original file (small images): same rule as previews,
+		// so a download limit cannot be bypassed.
+		if ( ! $this->can_preview() ) {
 			status_header( 403 );
 			exit;
 		}

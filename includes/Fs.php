@@ -109,7 +109,7 @@ final class Fs {
 	 * @return string
 	 */
 	public function visibility( $abs ) {
-		if ( Paths::is_within( $abs, Storage::base() ) ) {
+		if ( Paths::is_within( $abs, Storage::base() ) || ! Paths::is_within( $abs, $this->p->root ) ) {
 			return 'hidden';
 		}
 		$rel_root = Paths::relative( $abs, $this->p->root );
@@ -820,8 +820,10 @@ final class Fs {
 		$this->assert_removable( $abs );
 		Policy::assert_writable_name( $this->p, $name, is_dir( $abs ) );
 		$target = dirname( $abs ) . '/' . $name;
-		$case   = strtolower( basename( $abs ) ) === strtolower( $name );
-		if ( file_exists( $target ) && ! $case ) {
+		// A case-only rename may target the same file (case-insensitive file systems),
+		// but never another existing file.
+		$same = strtolower( basename( $abs ) ) === strtolower( $name ) && Paths::real( $target ) === Paths::real( $abs );
+		if ( file_exists( $target ) && ! $same ) {
 			throw new Error( 'exists', __( 'An item with this name already exists.', 'filora' ), 409 );
 		}
 		if ( 'ok' !== $this->visibility( $target ) ) {
