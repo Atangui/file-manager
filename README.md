@@ -6,6 +6,14 @@ Filora est un gestionnaire de fichiers moderne, rapide et sécurisé pour WordPr
 
 Il reprend toutes les fonctionnalités de Filester (navigation dans l’arborescence WordPress, upload, édition de code, archives, restrictions par rôle, corbeille…) mais il a été **réécrit de zéro** : pas de jQuery, pas d’elFinder, **aucune commande shell** (Filester a eu plusieurs CVE à cause d’elFinder et des commandes système).
 
+![Démo de Filora : grille de photos, aperçu, création d'un lien de partage, espace client](captures/demo.gif)
+
+| Gestionnaire de fichiers | Lien de partage | Espace client |
+|---|---|---|
+| ![Grille avec miniatures](captures/grille.png) | ![Création d'un lien de partage](captures/partage.png) | ![Page publique vue par le destinataire](captures/espace-client.png) |
+
+*Captures réalisées sur un WordPress de démonstration, fichiers fictifs.*
+
 ---
 
 ## Sommaire
