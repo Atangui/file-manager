@@ -105,6 +105,20 @@ final class Settings {
 					'quota'       => 0,
 				),
 			),
+			'contributor' => array(
+				'label'       => __( 'Content team (recommended for contributors)', 'filora' ),
+				'description' => __( 'Sees the site’s folders without WordPress, downloads, uploads documents (PDF, Office, images), replaces a file while keeping its web address, creates folders, renames and creates share links. Cannot delete or move anything.', 'filora' ),
+				'conf'        => array(
+					'root'        => '{ABSPATH}',
+					'create_root' => false,
+					'ops'         => array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'share' ),
+					'hidden'      => self::wordpress_hidden_patterns(),
+					'locked'      => array(),
+					'upload_exts' => $documents,
+					'max_upload'  => 20,
+					'quota'       => 0,
+				),
+			),
 			'manager'   => array(
 				'label'       => __( 'Document manager', 'filora' ),
 				'description' => __( 'For trusted staff: also creates folders, renames, moves, deletes (to the trash) and creates share links. Still never sees WordPress files.', 'filora' ),
@@ -138,7 +152,7 @@ final class Settings {
 	}
 
 	/**
-	 * Settings written on a fresh install: contributors get the "Document drop" profile.
+	 * Settings written on a fresh install: contributors get the "Content team" profile.
 	 * Existing sites are never changed silently (an upgrade must not grant new access).
 	 *
 	 * @return array
@@ -146,8 +160,8 @@ final class Settings {
 	public static function install_defaults() {
 		$defaults = self::defaults();
 		$presets  = self::role_presets();
-		if ( get_role( 'contributor' ) && isset( $presets['documents'] ) ) {
-			$defaults['roles']['contributor'] = array_merge( self::role_defaults(), $presets['documents']['conf'], array( 'enabled' => true, 'preset' => 'documents' ) );
+		if ( get_role( 'contributor' ) && isset( $presets['contributor'] ) ) {
+			$defaults['roles']['contributor'] = array_merge( self::role_defaults(), $presets['contributor']['conf'], array( 'enabled' => true, 'preset' => 'contributor' ) );
 		}
 		return apply_filters( 'filora_install_defaults', $defaults );
 	}

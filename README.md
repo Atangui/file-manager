@@ -151,7 +151,8 @@ define( 'FILORA_PRIVATE_DIR', '/home/monsite/filora-private' );
 | Modèle | Pour qui | Ce que le rôle peut faire |
 |---|---|---|
 | **Consultation et téléchargement** | Personnes qui consultent | Voir les dossiers propres au site (jamais WordPress) et télécharger |
-| **Dépôt de documents** *(appliqué aux Contributeurs sur une nouvelle installation)* | Équipe qui met en ligne des documents | + déposer des PDF, documents Office et images (20 Mo max) et **remplacer un fichier par une nouvelle version en gardant son adresse web** ; ni suppression, ni renommage, ni déplacement |
+| **Dépôt de documents** | Équipe qui met en ligne des documents | + déposer des PDF, documents Office et images (20 Mo max) et **remplacer un fichier par une nouvelle version en gardant son adresse web** ; ni suppression, ni renommage, ni déplacement |
+| **Équipe contenu** *(appliqué aux Contributeurs sur une nouvelle installation)* | Équipe qui publie | Comme « Dépôt de documents », + créer des dossiers, renommer et créer des liens de partage ; ni suppression, ni déplacement |
 | **Gestion des documents** | Équipe de confiance | + créer des dossiers, renommer, déplacer, supprimer (vers la corbeille), créer des liens de partage |
 | **Espace personnel (portail client)** | Clients, partenaires | Un dossier privé par utilisateur dans le Coffre-fort, quota de 1 Go |
 

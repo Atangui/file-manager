@@ -169,7 +169,13 @@ export async function uploadFromUrl() {
 /* Modify ---------------------------------------------------------------------------- */
 
 export async function rename(entry) {
-  const name = await prompt({ title: t('Rename'), label: t('New name'), value: entry.name, selectBase: entry.type === 'file', confirmLabel: t('Rename'), icon: 'rename' });
+  // Renaming something reachable on the web changes its address: links on the site break.
+  const help = entry.url
+    ? (entry.type === 'file'
+      ? t('This file has a public web address: renaming it changes the address and existing links will stop working. To update a document, use “Replace with a new version…” instead.')
+      : t('This folder is reachable on the web: renaming it changes the address of everything inside, and existing links will stop working.'))
+    : undefined;
+  const name = await prompt({ title: t('Rename'), label: t('New name'), value: entry.name, selectBase: entry.type === 'file', confirmLabel: t('Rename'), icon: 'rename', help });
   if (!name || name === entry.name) return;
   try {
     const updated = await post('fs/rename', { path: entry.path, name });

@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Filora 1.0.3\n"
-"POT-Creation-Date: 2026-10-26 15:18+0000\n"
+"Project-Id-Version: Filora 1.0.4\n"
+"POT-Creation-Date: 2026-11-02 15:23+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Shared links"
 msgstr ""
 
-#: includes/Admin.php:62 includes/i18n-strings.php:616
+#: includes/Admin.php:62 includes/i18n-strings.php:618
 msgid "Trash"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 msgid "log in"
 msgstr ""
 
-#: includes/Frontend.php:51 includes/Rest/Base.php:55 includes/i18n-strings.php:679
+#: includes/Frontend.php:51 includes/Rest/Base.php:55 includes/i18n-strings.php:681
 msgid "You do not have access to the file manager."
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "This file type is not allowed. Allowed types: %s"
 msgstr ""
 
-#: includes/Policy.php:181 includes/i18n-strings.php:607
+#: includes/Policy.php:181 includes/i18n-strings.php:608
 msgid "This file type is not allowed."
 msgstr ""
 
@@ -363,7 +363,7 @@ msgstr ""
 msgid "Invalid settings."
 msgstr ""
 
-#: includes/Rest/AdminApi.php:269 includes/i18n-strings.php:605
+#: includes/Rest/AdminApi.php:269 includes/i18n-strings.php:606
 msgid "This file is not a Filora settings export."
 msgstr ""
 
@@ -439,18 +439,26 @@ msgid "Like a classic file manager set-up for contributors: sees the site’s fo
 msgstr ""
 
 #: includes/Settings.php:109
-msgid "Document manager"
+msgid "Content team (recommended for contributors)"
 msgstr ""
 
 #: includes/Settings.php:110
-msgid "For trusted staff: also creates folders, renames, moves, deletes (to the trash) and creates share links. Still never sees WordPress files."
+msgid "Sees the site’s folders without WordPress, downloads, uploads documents (PDF, Office, images), replaces a file while keeping its web address, creates folders, renames and creates share links. Cannot delete or move anything."
 msgstr ""
 
 #: includes/Settings.php:123
-msgid "Personal space (client portal)"
+msgid "Document manager"
 msgstr ""
 
 #: includes/Settings.php:124
+msgid "For trusted staff: also creates folders, renames, moves, deletes (to the trash) and creates share links. Still never sees WordPress files."
+msgstr ""
+
+#: includes/Settings.php:137
+msgid "Personal space (client portal)"
+msgstr ""
+
+#: includes/Settings.php:138
 msgid "Each user gets their own private folder in the Vault, created automatically, with a 1 GB quota. Nobody sees anyone else’s files."
 msgstr ""
 
@@ -2975,590 +2983,598 @@ msgstr ""
 msgid "This file cannot be previewed."
 msgstr ""
 
-#: includes/i18n-strings.php:606
+#: includes/i18n-strings.php:605
+msgid "This file has a public web address: renaming it changes the address and existing links will stop working. To update a document, use “Replace with a new version…” instead."
+msgstr ""
+
+#: includes/i18n-strings.php:607
 msgid "This file is too large."
 msgstr ""
 
-#: includes/i18n-strings.php:608
+#: includes/i18n-strings.php:609
 msgid "This folder"
 msgstr ""
 
-#: includes/i18n-strings.php:609
+#: includes/i18n-strings.php:610
 msgid "This folder cannot be opened"
 msgstr ""
 
-#: includes/i18n-strings.php:610
+#: includes/i18n-strings.php:611
 msgid "This folder is empty"
 msgstr ""
 
-#: includes/i18n-strings.php:611
-msgid "This font cannot be previewed."
-msgstr ""
-
 #: includes/i18n-strings.php:612
-msgid "This screen could not be loaded."
+msgid "This folder is reachable on the web: renaming it changes the address of everything inside, and existing links will stop working."
 msgstr ""
 
 #: includes/i18n-strings.php:613
-msgid "Tip: drag on an empty area to select several items, and drop files from your computer anywhere to upload them."
+msgid "This font cannot be previewed."
 msgstr ""
 
 #: includes/i18n-strings.php:614
-msgid "Tip: select an item to see its details and share links."
+msgid "This screen could not be loaded."
 msgstr ""
 
 #: includes/i18n-strings.php:615
-msgid "Toggle details panel"
+msgid "Tip: drag on an empty area to select several items, and drop files from your computer anywhere to upload them."
+msgstr ""
+
+#: includes/i18n-strings.php:616
+msgid "Tip: select an item to see its details and share links."
 msgstr ""
 
 #: includes/i18n-strings.php:617
-msgid "Try another name, or search inside file contents."
-msgstr ""
-
-#: includes/i18n-strings.php:618
-msgid "Type"
+msgid "Toggle details panel"
 msgstr ""
 
 #: includes/i18n-strings.php:619
-msgid "Type a command, a file name or a path (/…)"
+msgid "Try another name, or search inside file contents."
 msgstr ""
 
 #: includes/i18n-strings.php:620
-msgid "Type to filter this folder. Press Enter to search subfolders, Shift+Enter to search inside files."
+msgid "Type"
 msgstr ""
 
 #: includes/i18n-strings.php:621
-msgid "URL prefix"
+msgid "Type a command, a file name or a path (/…)"
 msgstr ""
 
 #: includes/i18n-strings.php:622
-msgid "Unauthorized email"
+msgid "Type to filter this folder. Press Enter to search subfolders, Shift+Enter to search inside files."
 msgstr ""
 
 #: includes/i18n-strings.php:623
-msgid "Unavailable"
+msgid "URL prefix"
 msgstr ""
 
 #: includes/i18n-strings.php:624
-msgid "Undo"
+msgid "Unauthorized email"
 msgstr ""
 
 #: includes/i18n-strings.php:625
-msgid "Uninstall"
+msgid "Unavailable"
 msgstr ""
 
 #: includes/i18n-strings.php:626
-msgid "Unknown files in core folders"
+msgid "Undo"
 msgstr ""
 
 #: includes/i18n-strings.php:627
-msgid "Unlocked with password"
+msgid "Uninstall"
 msgstr ""
 
 #: includes/i18n-strings.php:628
-msgid "Unsaved changes"
+msgid "Unknown files in core folders"
 msgstr ""
 
 #: includes/i18n-strings.php:629
-msgid "Up"
+msgid "Unlocked with password"
 msgstr ""
 
 #: includes/i18n-strings.php:630
-msgid "Upload"
+msgid "Unsaved changes"
 msgstr ""
 
 #: includes/i18n-strings.php:631
-msgid "Upload a folder"
+msgid "Up"
 msgstr ""
 
 #: includes/i18n-strings.php:632
-msgid "Upload complete."
+msgid "Upload"
 msgstr ""
 
 #: includes/i18n-strings.php:633
+msgid "Upload a folder"
+msgstr ""
+
+#: includes/i18n-strings.php:634
+msgid "Upload complete."
+msgstr ""
+
+#: includes/i18n-strings.php:635
 #, php-format
 msgid "Upload failed (%s)."
 msgstr ""
 
-#: includes/i18n-strings.php:634
+#: includes/i18n-strings.php:636
 msgid "Upload files"
 msgstr ""
 
-#: includes/i18n-strings.php:635
+#: includes/i18n-strings.php:637
 msgid "Upload from URL"
 msgstr ""
 
-#: includes/i18n-strings.php:636
+#: includes/i18n-strings.php:638
 msgid "Uploaded"
 msgstr ""
 
-#: includes/i18n-strings.php:637
+#: includes/i18n-strings.php:639
 msgid "Uploads"
 msgstr ""
 
-#: includes/i18n-strings.php:638
+#: includes/i18n-strings.php:640
 msgid "Uploads from visitors"
 msgstr ""
 
-#: includes/i18n-strings.php:639
+#: includes/i18n-strings.php:641
 msgid "Usage"
 msgstr ""
 
-#: includes/i18n-strings.php:640
+#: includes/i18n-strings.php:642
 msgid "Use three digits from 0 to 7, e.g. 644."
 msgstr ""
 
-#: includes/i18n-strings.php:641
+#: includes/i18n-strings.php:643
 msgid "Useful after an incident, or to review what a plugin update changed."
 msgstr ""
 
-#: includes/i18n-strings.php:642
+#: includes/i18n-strings.php:644
 msgid "Vault (private)"
 msgstr ""
 
-#: includes/i18n-strings.php:643
+#: includes/i18n-strings.php:645
 msgid "Vault protection"
 msgstr ""
 
-#: includes/i18n-strings.php:644
+#: includes/i18n-strings.php:646
 msgid "Version history"
 msgstr ""
 
-#: includes/i18n-strings.php:645
+#: includes/i18n-strings.php:647
 msgid "Version restored."
 msgstr ""
 
-#: includes/i18n-strings.php:646
+#: includes/i18n-strings.php:648
 msgid "Versions"
 msgstr ""
 
-#: includes/i18n-strings.php:647
+#: includes/i18n-strings.php:649
 msgid "Versions to keep per file"
 msgstr ""
 
-#: includes/i18n-strings.php:648 templates/share.php:36
+#: includes/i18n-strings.php:650 templates/share.php:36
 msgid "Video"
 msgstr ""
 
-#: includes/i18n-strings.php:649
+#: includes/i18n-strings.php:651
 msgid "View"
 msgstr ""
 
-#: includes/i18n-strings.php:650
+#: includes/i18n-strings.php:652
 msgid "View & download"
 msgstr ""
 
-#: includes/i18n-strings.php:651
+#: includes/i18n-strings.php:653
 msgid "View only"
 msgstr ""
 
-#: includes/i18n-strings.php:652
+#: includes/i18n-strings.php:654
 msgid "Views"
 msgstr ""
 
-#: includes/i18n-strings.php:653
+#: includes/i18n-strings.php:655
 msgid "Visible but cannot be changed."
 msgstr ""
 
-#: includes/i18n-strings.php:654
+#: includes/i18n-strings.php:656
 msgid "Visitor"
 msgstr ""
 
-#: includes/i18n-strings.php:655
+#: includes/i18n-strings.php:657
 msgid "Visitor session duration (hours)"
 msgstr ""
 
-#: includes/i18n-strings.php:656
+#: includes/i18n-strings.php:658
 msgid "Visitors can also upload files into this folder."
 msgstr ""
 
-#: includes/i18n-strings.php:657
+#: includes/i18n-strings.php:659
 msgid "Visitors can browse and preview, without a download button."
 msgstr ""
 
-#: includes/i18n-strings.php:658
+#: includes/i18n-strings.php:660
 msgid "Visitors can only send files. They never see the folder’s content."
 msgstr ""
 
-#: includes/i18n-strings.php:659
+#: includes/i18n-strings.php:661
 msgid "Visitors can preview and download files (or everything as a ZIP)."
 msgstr ""
 
-#: includes/i18n-strings.php:660
+#: includes/i18n-strings.php:662
 msgid "Visitors confirm their email address with a one-time code. Allows *@company.com."
 msgstr ""
 
-#: includes/i18n-strings.php:661
+#: includes/i18n-strings.php:663
 msgid "Visitors must enter it to open the link."
 msgstr ""
 
-#: includes/i18n-strings.php:662
+#: includes/i18n-strings.php:664
 msgid "Waiting…"
 msgstr ""
 
-#: includes/i18n-strings.php:663
+#: includes/i18n-strings.php:665
 msgid "Web server"
 msgstr ""
 
-#: includes/i18n-strings.php:664
+#: includes/i18n-strings.php:666
 msgid "Well protected"
 msgstr ""
 
-#: includes/i18n-strings.php:665
+#: includes/i18n-strings.php:667
 msgid "When defined in wp-config.php, PHP editing (or all changes) is disabled."
 msgstr ""
 
-#: includes/i18n-strings.php:666
+#: includes/i18n-strings.php:668
 msgid "When files are uploaded"
 msgstr ""
 
-#: includes/i18n-strings.php:667
+#: includes/i18n-strings.php:669
 msgid "Width (px)"
 msgstr ""
 
-#: includes/i18n-strings.php:668
+#: includes/i18n-strings.php:670
 msgid "Without HTTPS, links, passwords and files can be intercepted. Enable SSL on your host."
 msgstr ""
 
-#: includes/i18n-strings.php:669
+#: includes/i18n-strings.php:671
 msgid "Word wrap"
 msgstr ""
 
-#: includes/i18n-strings.php:670
+#: includes/i18n-strings.php:672
 msgid "WordPress"
 msgstr ""
 
-#: includes/i18n-strings.php:671
+#: includes/i18n-strings.php:673
 #, php-format
 msgid "WordPress %1$s — %2$d files verified."
 msgstr ""
 
-#: includes/i18n-strings.php:672
+#: includes/i18n-strings.php:674
 msgid "WordPress core integrity"
 msgstr ""
 
-#: includes/i18n-strings.php:673
+#: includes/i18n-strings.php:675
 msgid "WordPress system item (protected)"
 msgstr ""
 
-#: includes/i18n-strings.php:674
+#: includes/i18n-strings.php:676
 msgid "Write"
 msgstr ""
 
-#: includes/i18n-strings.php:675
+#: includes/i18n-strings.php:677
 msgid "Wrong code"
 msgstr ""
 
-#: includes/i18n-strings.php:676
+#: includes/i18n-strings.php:678
 msgid "Wrong password"
 msgstr ""
 
-#: includes/i18n-strings.php:677
+#: includes/i18n-strings.php:679
 msgid "Wrong password (confirmation)"
 msgstr ""
 
-#: includes/i18n-strings.php:678
+#: includes/i18n-strings.php:680
 msgid "You are not allowed to open this file."
 msgstr ""
 
-#: includes/i18n-strings.php:680
+#: includes/i18n-strings.php:682
 msgid "You have unsaved changes."
 msgstr ""
 
-#: includes/i18n-strings.php:681
+#: includes/i18n-strings.php:683
 msgid "Your WordPress password"
 msgstr ""
 
-#: includes/i18n-strings.php:682
+#: includes/i18n-strings.php:684
 msgid "Your link is ready"
 msgstr ""
 
-#: includes/i18n-strings.php:683
+#: includes/i18n-strings.php:685
 msgid "Your recent actions."
 msgstr ""
 
-#: includes/i18n-strings.php:684
+#: includes/i18n-strings.php:686
 msgid "Your server ignores .htaccess (Nginx?). Add the rule below to your server configuration."
 msgstr ""
 
-#: includes/i18n-strings.php:685
+#: includes/i18n-strings.php:687
 msgid "Your session expired. Please reload the page."
 msgstr ""
 
-#: includes/i18n-strings.php:686
+#: includes/i18n-strings.php:688
 msgid "Your unsaved changes will be lost."
 msgstr ""
 
-#: includes/i18n-strings.php:687
+#: includes/i18n-strings.php:689
 msgid "ZIP support"
 msgstr ""
 
-#: includes/i18n-strings.php:688
+#: includes/i18n-strings.php:690
 msgid "ZipArchive is available."
 msgstr ""
 
-#: includes/i18n-strings.php:689
-msgid "auto"
-msgstr ""
-
-#: includes/i18n-strings.php:690
-#, php-format
-msgid "bypassed with %s chunks"
-msgstr ""
-
 #: includes/i18n-strings.php:691
-#, php-format
-msgid "expired %s"
+msgid "auto"
 msgstr ""
 
 #: includes/i18n-strings.php:692
 #, php-format
-msgid "expires %s"
+msgid "bypassed with %s chunks"
 msgstr ""
 
 #: includes/i18n-strings.php:693
-msgid "folders"
+#, php-format
+msgid "expired %s"
 msgstr ""
 
 #: includes/i18n-strings.php:694
 #, php-format
-msgid "from %s"
+msgid "expires %s"
 msgstr ""
 
 #: includes/i18n-strings.php:695
-msgid "in file contents"
+msgid "folders"
 msgstr ""
 
 #: includes/i18n-strings.php:696
-msgid "in names"
+#, php-format
+msgid "from %s"
 msgstr ""
 
 #: includes/i18n-strings.php:697
-#, php-format
-msgid "into %s"
+msgid "in file contents"
 msgstr ""
 
 #: includes/i18n-strings.php:698
-msgid "just now"
+msgid "in names"
 msgstr ""
 
 #: includes/i18n-strings.php:699
 #, php-format
-msgid "last access %s"
+msgid "into %s"
 msgstr ""
 
 #: includes/i18n-strings.php:700
+msgid "just now"
+msgstr ""
+
+#: includes/i18n-strings.php:701
+#, php-format
+msgid "last access %s"
+msgstr ""
+
+#: includes/i18n-strings.php:702
 #, php-format
 msgid "link #%d"
 msgstr ""
 
-#: includes/i18n-strings.php:701
+#: includes/i18n-strings.php:703
 msgid "list truncated"
 msgstr ""
 
-#: includes/i18n-strings.php:702
+#: includes/i18n-strings.php:704
 msgid "navigate"
 msgstr ""
 
-#: includes/i18n-strings.php:703
+#: includes/i18n-strings.php:705
 msgid "no expiration"
 msgstr ""
 
-#: includes/i18n-strings.php:704
+#: includes/i18n-strings.php:706
 msgid "partial"
 msgstr ""
 
-#: includes/i18n-strings.php:705
+#: includes/i18n-strings.php:707
 msgid "partial results"
 msgstr ""
 
-#: includes/i18n-strings.php:706
+#: includes/i18n-strings.php:708
 msgid "run"
 msgstr ""
 
-#: includes/i18n-strings.php:707
+#: includes/i18n-strings.php:709
 msgid "toggle"
 msgstr ""
 
-#: includes/i18n-strings.php:708
+#: includes/i18n-strings.php:710
 msgid "uncompressed"
 msgstr ""
 
-#: includes/i18n-strings.php:709
+#: includes/i18n-strings.php:711
 msgid "unlimited"
 msgstr ""
 
-#: includes/i18n-strings.php:710
+#: includes/i18n-strings.php:712
 msgid "vs. editor"
 msgstr ""
 
-#: includes/i18n-strings.php:711
+#: includes/i18n-strings.php:713
 #, php-format
 msgid "“%s” moved to the trash."
 msgstr ""
 
-#: includes/i18n-strings.php:712
+#: includes/i18n-strings.php:714
 #, php-format
 msgid "“%s” will be permanently deleted. This cannot be undone."
 msgstr ""
 
-#: includes/i18n-strings.php:713
+#: includes/i18n-strings.php:715
 msgid "“Download all” as ZIP"
 msgstr ""
 
-#: includes/i18n-strings.php:714
+#: includes/i18n-strings.php:716
 #, php-format
 msgid "%d active link"
 msgid_plural "%d active links"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:715
+#: includes/i18n-strings.php:717
 #, php-format
 msgid "%d download"
 msgid_plural "%d downloads"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:716
+#: includes/i18n-strings.php:718
 #, php-format
 msgid "%d entry"
 msgid_plural "%d entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:717
+#: includes/i18n-strings.php:719
 #, php-format
 msgid "%d file already existed: the new one was renamed."
 msgid_plural "%d files already existed: the new ones were renamed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:718
+#: includes/i18n-strings.php:720
 #, php-format
 msgid "%d file uploaded"
 msgid_plural "%d files uploaded"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:719
+#: includes/i18n-strings.php:721
 #, php-format
 msgid "%d file"
 msgid_plural "%d files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:720
+#: includes/i18n-strings.php:722
 #, php-format
 msgid "%d folder"
 msgid_plural "%d folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:721
+#: includes/i18n-strings.php:723
 #, php-format
 msgid "%d item deleted."
 msgid_plural "%d items deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:722
+#: includes/i18n-strings.php:724
 #, php-format
 msgid "%d item in clipboard"
 msgid_plural "%d items in clipboard"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:723
+#: includes/i18n-strings.php:725
 #, php-format
 msgid "%d item restored."
 msgid_plural "%d items restored."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:724
+#: includes/i18n-strings.php:726
 #, php-format
 msgid "%d item selected"
 msgid_plural "%d items selected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:725
+#: includes/i18n-strings.php:727
 #, php-format
 msgid "%d item will be permanently deleted. This cannot be undone."
 msgid_plural "%d items will be permanently deleted. This cannot be undone."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:726
+#: includes/i18n-strings.php:728
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:727
+#: includes/i18n-strings.php:729
 #, php-format
 msgid "%d replacement"
 msgid_plural "%d replacements"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:728
+#: includes/i18n-strings.php:730
 #, php-format
 msgid "%d result"
 msgid_plural "%d results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:729
+#: includes/i18n-strings.php:731
 #, php-format
 msgid "%d saved version"
 msgid_plural "%d saved versions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:730
+#: includes/i18n-strings.php:732
 #, php-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:731
+#: includes/i18n-strings.php:733
 #, php-format
 msgid "%d upload"
 msgid_plural "%d uploads"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:732
+#: includes/i18n-strings.php:734
 #, php-format
 msgid "%d user"
 msgid_plural "%d users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:733
+#: includes/i18n-strings.php:735
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:734
+#: includes/i18n-strings.php:736
 msgid "Replace it with the new version? Its web address stays the same and the previous version is kept."
 msgid_plural "Replace them with the new version? Their web address stays the same and the previous versions are kept."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:735
+#: includes/i18n-strings.php:737
 msgid "This file already exists"
 msgid_plural "These files already exist"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/i18n-strings.php:736
+#: includes/i18n-strings.php:738
 #, php-format
 msgid "Uploading %d file"
 msgid_plural "Uploading %d files"
