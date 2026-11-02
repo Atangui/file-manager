@@ -67,7 +67,7 @@ let out = `# Copyright (C) ${new Date().getFullYear()} Charles A.
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Filora 1.0.4\\n"
+"Project-Id-Version: Filora 1.0.5\\n"
 "POT-Creation-Date: ${date}\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=UTF-8\\n"

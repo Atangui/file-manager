@@ -4,7 +4,7 @@ Tags: file manager, share files, client portal, secure download, code editor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ Nginx ignores .htaccess files. Add the rule shown in Files → Security tools to
 Only the optional core integrity check contacts api.wordpress.org. There are no external fonts, CDNs or trackers.
 
 == Changelog ==
+
+= 1.0.5 =
+* "Content team" template: contributors can also copy and duplicate.
 
 = 1.0.4 =
 * New "Content team" template, applied to contributors on new installs.

@@ -107,11 +107,11 @@ final class Settings {
 			),
 			'contributor' => array(
 				'label'       => __( 'Content team (recommended for contributors)', 'filora' ),
-				'description' => __( 'Sees the site’s folders without WordPress, downloads, uploads documents (PDF, Office, images), replaces a file while keeping its web address, creates folders, renames and creates share links. Cannot delete or move anything.', 'filora' ),
+				'description' => __( 'Sees the site’s folders without WordPress, downloads, uploads documents (PDF, Office, images), replaces a file while keeping its web address, creates folders, copies and duplicates, renames and creates share links. Cannot delete or move anything.', 'filora' ),
 				'conf'        => array(
 					'root'        => '{ABSPATH}',
 					'create_root' => false,
-					'ops'         => array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'share' ),
+					'ops'         => array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'copy', 'share' ),
 					'hidden'      => self::wordpress_hidden_patterns(),
 					'locked'      => array(),
 					'upload_exts' => $documents,

@@ -268,7 +268,7 @@ ok( 200 === $s && 1 === count( $d ), 'editor only sees own shares' );
 section( 'Role templates' );
 as_user( $admin->ID );
 $install = Filora\Settings::install_defaults();
-ok( ! empty( $install['roles']['contributor']['enabled'] ) && 'contributor' === $install['roles']['contributor']['preset'] && array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'share' ) === $install['roles']['contributor']['ops'], 'fresh install: contributors get the "Content team" template' );
+ok( ! empty( $install['roles']['contributor']['enabled'] ) && 'contributor' === $install['roles']['contributor']['preset'] && array( 'download', 'upload', 'replace', 'mkdir', 'rename', 'copy', 'share' ) === $install['roles']['contributor']['ops'], 'fresh install: contributors get the "Content team" template' );
 ok( empty( Filora\Settings::defaults()['roles'] ), 'upgrades never grant access silently (defaults have no roles)' );
 $presets                          = Filora\Settings::role_presets();
 $settings                         = Filora\Settings::get();
